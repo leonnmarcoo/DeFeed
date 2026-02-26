@@ -37,7 +37,10 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "AppModule",
-            path: "."
+            path: ".",
+            resources: [
+                .copy("Assets")
+            ]
         )
     ],
     swiftLanguageVersions: [.v6]
