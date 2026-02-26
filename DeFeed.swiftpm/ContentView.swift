@@ -11,9 +11,7 @@ struct ContentView: View {
                     .transition(.opacity)
 
             case .feed:
-                // TODO: FeedView — Act 1
-                Color.red.opacity(0.3)
-                    .overlay(Text("Feed — Coming Soon"))
+                FeedView()
                     .transition(.opacity)
 
             case .input:

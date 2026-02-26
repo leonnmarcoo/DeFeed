@@ -11,9 +11,9 @@ struct OnboardingView: View {
         "Scroll. I'll handle the rest."
     ]
 
-    /// The title text for each dialogue step (last one changes).
+    /// The title text shown after each dialogue line finishes typing.
     private var titleText: String {
-        currentIndex < dialogueLines.count - 1 ? "Tap to Continue" : "Scroll to Continue"
+        "Tap to Continue"
     }
 
     @State private var currentIndex: Int = 0
@@ -71,7 +71,8 @@ struct OnboardingView: View {
                     }
                 }
                 .id(dialogueId)
-                .frame(width: w * 0.40, alignment: .leading)
+                .multilineTextAlignment(.center)
+                .frame(width: w * 0.40, alignment: .center)
                 .position(x: w * 0.64, y: h * 0.52)
 
                 // MARK: - Title Text (top center)
