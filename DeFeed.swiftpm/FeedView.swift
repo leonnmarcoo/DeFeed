@@ -107,7 +107,7 @@ struct FeedView: View {
 
                 TypewriterText(
                     cards[currentPage].dialogue,
-                    font: .custom("ComicSansMS", size: dialogueFontSize(width: w)),
+                    font: .custom("ComicNeue-Regular", size: dialogueFontSize(width: w)),
                     color: .black,
                     characterDelay: .milliseconds(30)
                 )

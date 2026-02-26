@@ -48,7 +48,7 @@ struct MirrorCardView: View {
                             .frame(width: w * 0.37, height: h * 0.23)
 
                         Text(mirrorDialogues[2])
-                            .font(.custom("ComicSansMS", size: bubbleFontSize(width: w)))
+                            .font(.custom("ComicNeue-Regular", size: bubbleFontSize(width: w)))
                             .foregroundColor(.black)
                             .multilineTextAlignment(.center)
                             .frame(width: w * 0.22, alignment: .center)
@@ -64,7 +64,7 @@ struct MirrorCardView: View {
                             .frame(width: w * 0.37, height: h * 0.23)
 
                         Text(mirrorDialogues[1])
-                            .font(.custom("ComicSansMS", size: bubbleFontSize(width: w)))
+                            .font(.custom("ComicNeue-Regular", size: bubbleFontSize(width: w)))
                             .foregroundColor(.black)
                             .multilineTextAlignment(.center)
                             .frame(width: w * 0.24, alignment: .center)
@@ -81,7 +81,7 @@ struct MirrorCardView: View {
                             .frame(width: w * 0.36, height: w * 0.36)
 
                         Text(mirrorDialogues[0])
-                            .font(.custom("ComicSansMS", size: bubbleFontSize(width: w)))
+                            .font(.custom("ComicNeue-Regular", size: bubbleFontSize(width: w)))
                             .foregroundColor(.black)
                             .multilineTextAlignment(.center)
                             .frame(width: w * 0.22, alignment: .center)
@@ -99,7 +99,7 @@ struct MirrorCardView: View {
                 // MARK: - "Tap to Continue" (shown after each bubble appears)
                 if showContinue {
                     Text("Tap to Continue")
-                        .font(.custom("ComicSansMS-Bold", size: titleFontSize(width: w)))
+                        .font(.custom("ComicNeue-Bold", size: titleFontSize(width: w)))
                         .foregroundColor(.white)
                         .shadow(color: .black.opacity(0.6), radius: 4, x: 2, y: 2)
                         .opacity(titlePulse ? 0.6 : 1.0)

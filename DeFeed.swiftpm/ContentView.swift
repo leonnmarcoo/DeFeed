@@ -15,21 +15,15 @@ struct ContentView: View {
                     .transition(.opacity)
 
             case .input:
-                // TODO: InputView — Act 2 Screen 1
-                Color.blue.opacity(0.3)
-                    .overlay(Text("Input — Coming Soon"))
+                InputView()
                     .transition(.opacity)
 
             case .statistics:
-                // TODO: StatisticsView — Act 2 Screen 2
-                Color.purple.opacity(0.3)
-                    .overlay(Text("Statistics — Coming Soon"))
+                StatisticsView()
                     .transition(.opacity)
 
             case .defeat:
-                // TODO: DefeatView — Act 2 Screen 3
-                Color.green.opacity(0.3)
-                    .overlay(Text("Defeat — Coming Soon"))
+                DefeatView()
                     .transition(.opacity)
             }
         }

@@ -25,10 +25,10 @@ struct FeedCardView: View {
                 // MARK: - Social Media Caption (bottom-left)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(card.username)
-                        .font(.custom("ComicSansMS-Bold", size: captionFontSize(width: w)))
+                        .font(.custom("ComicNeue-Bold", size: captionFontSize(width: w)))
                         .foregroundColor(.white)
                     Text(card.caption)
-                        .font(.custom("ComicSansMS", size: captionFontSize(width: w)))
+                        .font(.custom("ComicNeue-Regular", size: captionFontSize(width: w)))
                         .foregroundColor(.white)
                         .lineLimit(3)
                 }

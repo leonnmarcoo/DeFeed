@@ -13,7 +13,7 @@ struct TypewriterText: View {
 
     init(
         _ text: String,
-        font: Font = .custom("ComicSansMS", size: 24),
+        font: Font = .custom("ComicNeue-Regular", size: 24),
         color: Color = .black,
         characterDelay: Duration = .milliseconds(40),
         onComplete: (() -> Void)? = nil

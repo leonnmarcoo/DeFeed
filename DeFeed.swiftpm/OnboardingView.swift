@@ -54,7 +54,7 @@ struct OnboardingView: View {
                 // MARK: - Dialogue Text (inside the speech bubble)
                 TypewriterText(
                     dialogueLines[currentIndex],
-                    font: .custom("ComicSansMS", size: dialogueFontSize(width: w)),
+                    font: .custom("ComicNeue-Regular", size: dialogueFontSize(width: w)),
                     color: .black,
                     characterDelay: .milliseconds(35)
                 ) {
@@ -78,7 +78,7 @@ struct OnboardingView: View {
                 // MARK: - Title Text (top center)
                 if titleVisible {
                     Text(titleText)
-                        .font(.custom("ComicSansMS-Bold", size: titleFontSize(width: w)))
+                        .font(.custom("ComicNeue-Bold", size: titleFontSize(width: w)))
                         .foregroundColor(.white)
                         .shadow(color: .black.opacity(0.6), radius: 4, x: 2, y: 2)
                         .opacity(titlePulse ? 0.6 : 1.0)
