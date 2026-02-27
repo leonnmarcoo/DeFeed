@@ -25,7 +25,8 @@ struct DefeatView: View {
 
             ZStack {
                 // MARK: - Background
-                BundleImage("Stats Background")
+                Image("Stats Panel Blue")
+                    .resizable()
                     .ignoresSafeArea()
 
                 VStack(spacing: 0) {
@@ -54,7 +55,9 @@ struct DefeatView: View {
                     Spacer()
 
                     // MARK: - Dr. Doomscroll (collapses on defeat)
-                    BundleImage("Dr Doomscroll Pose 3", contentMode: .fit)
+                    Image("Dr Doomscroll Pose 3")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
                         .frame(width: w * 0.70, height: h * 0.40)
                         .opacity(villainOpacity)
                         .offset(y: villainOffset)

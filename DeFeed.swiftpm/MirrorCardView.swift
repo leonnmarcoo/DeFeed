@@ -33,7 +33,8 @@ struct MirrorCardView: View {
 
             ZStack(alignment: .topLeading) {
                 // MARK: - Red Background
-                BundleImage("Feed Background")
+                Image("Stats Panel Red")
+                    .resizable()
                     .ignoresSafeArea()
 
                 // MARK: - Full HP Bar (spanning full width at top)
@@ -44,7 +45,9 @@ struct MirrorCardView: View {
                 // MARK: - Speech Bubble Right-Top (Step 3)
                 if dialogueStep >= 3 {
                     ZStack {
-                        BundleImage("Mirror Bubble Right", contentMode: .fit)
+                        Image("Mirror Bubble Right")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
                             .frame(width: w * 0.37, height: h * 0.23)
 
                         Text(mirrorDialogues[2])
@@ -60,7 +63,9 @@ struct MirrorCardView: View {
                 // MARK: - Speech Bubble Left: Crimes list (Step 2+)
                 if dialogueStep >= 2 {
                     ZStack {
-                        BundleImage("Mirror Bubble Left", contentMode: .fit)
+                        Image("Mirror Bubble Left")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
                             .frame(width: w * 0.37, height: h * 0.23)
 
                         Text(mirrorDialogues[1])
@@ -77,7 +82,9 @@ struct MirrorCardView: View {
                 // MARK: - Dialogue Box Bottom-Right (Step 1+)
                 if dialogueStep >= 1 {
                     ZStack {
-                        BundleImage("Speech Bubble Small", contentMode: .fit)
+                        Image("Speech Bubble Small")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
                             .frame(width: w * 0.36, height: w * 0.36)
 
                         Text(mirrorDialogues[0])
@@ -92,7 +99,9 @@ struct MirrorCardView: View {
                 }
 
                 // MARK: - Dr. Doomscroll Pose 3 (large, triumphant)
-                BundleImage("Dr Doomscroll Pose 3", contentMode: .fit)
+                Image("Dr Doomscroll Pose 3")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: w * 0.80, height: h * 0.51)
                     .position(x: w * 0.50, y: h * 0.75)
 

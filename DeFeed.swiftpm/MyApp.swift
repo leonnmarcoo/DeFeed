@@ -20,7 +20,7 @@ struct MyApp: App {
     private static func registerCustomFonts() {
         let fontNames = ["ComicNeue-Regular", "ComicNeue-Bold"]
         for fontName in fontNames {
-            if let url = Bundle.main.url(forResource: fontName, withExtension: "ttf", subdirectory: "Assets")
+            if let url = Bundle.main.url(forResource: fontName, withExtension: "ttf", subdirectory: "Font")
                 ?? Bundle.main.url(forResource: fontName, withExtension: "ttf") {
                 CTFontManagerRegisterFontsForURL(url as CFURL, .process, nil)
             }

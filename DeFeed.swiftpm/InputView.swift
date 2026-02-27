@@ -31,7 +31,8 @@ struct InputView: View {
 
             ZStack {
                 // MARK: - Blue Comic Background
-                BundleImage("Stats Background")
+                Image("Stats Panel Blue")
+                    .resizable()
                     .ignoresSafeArea()
 
                 VStack(spacing: 0) {
@@ -92,7 +93,9 @@ struct InputView: View {
                     ZStack(alignment: .bottomLeading) {
                         // Dialogue Box (right side)
                         ZStack {
-                            BundleImage("Stats Dialogue Box", contentMode: .fit)
+                            Image("Speech Bubble Small")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
                                 .frame(width: w * 0.60, height: w * 0.60)
 
                             TypewriterText(
@@ -109,7 +112,9 @@ struct InputView: View {
                         .offset(x: w * 0.38, y: -h * 0.08)
 
                         // Dr. Doomscroll Pose 2 (bottom-left)
-                        BundleImage("Dr Doomscroll Pose 2", contentMode: .fit)
+                        Image("Dr Doomscroll Pose 2")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
                             .frame(width: w * 0.60, height: h * 0.34)
                     }
                     .frame(width: w, height: h * 0.46, alignment: .bottomLeading)

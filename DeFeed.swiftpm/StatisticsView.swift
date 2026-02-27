@@ -122,7 +122,7 @@ struct StatisticsView: View {
 
     @ViewBuilder
     private func weekPanel(width: CGFloat, height: CGFloat, screenWidth: CGFloat) -> some View {
-        panelBase(imageName: "Stats Background", width: width, height: height) {
+        panelBase(imageName: "Stats Panel Blue", width: width, height: height) {
             VStack(spacing: 4) {
                 Text("Every week, you feed me")
                     .font(.custom("ComicNeue-Regular", size: panelBodyFont(width: screenWidth)))
@@ -163,7 +163,9 @@ struct StatisticsView: View {
         panelBase(imageName: "Stats Panel Green", width: width, height: height) {
             HStack(spacing: 0) {
                 // Pose 3 (left)
-                BundleImage("Dr Doomscroll Pose 3", contentMode: .fit)
+                Image("Dr Doomscroll Pose 3")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: width * 0.40, height: height * 0.85)
 
                 // Text (right)
@@ -206,7 +208,7 @@ struct StatisticsView: View {
 
     @ViewBuilder
     private func lifetimePanel(width: CGFloat, height: CGFloat, screenWidth: CGFloat) -> some View {
-        panelBase(imageName: "Stats Background", width: width, height: height) {
+        panelBase(imageName: "Stats Panel Blue", width: width, height: height) {
             VStack(spacing: 4) {
                 Text("Across a lifetime, that's")
                     .font(.custom("ComicNeue-Regular", size: panelBodyFont(width: screenWidth)))
@@ -235,7 +237,8 @@ struct StatisticsView: View {
         @ViewBuilder content: () -> Content
     ) -> some View {
         ZStack {
-            BundleImage(imageName)
+            Image(imageName)
+                .resizable()
                 .frame(width: width, height: height)
 
             content()

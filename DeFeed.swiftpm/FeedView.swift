@@ -50,7 +50,8 @@ struct FeedView: View {
 
         ZStack {
             // Background (full bleed)
-            BundleImage("Feed Background")
+            Image("Stats Panel Red")
+                .resizable()
                 .ignoresSafeArea()
 
             // MARK: - Scrollable Content (below header)
@@ -96,13 +97,17 @@ struct FeedView: View {
     private func headerView(w: CGFloat, headerHeight: CGFloat) -> some View {
         ZStack {
             // Dr. Doomscroll Pose 2 (left side)
-            BundleImage("Dr Doomscroll Pose 2", contentMode: .fit)
+            Image("Dr Doomscroll Pose 2")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
                 .frame(width: w * 0.24, height: headerHeight * 0.82)
                 .position(x: w * 0.155, y: headerHeight * 0.55)
 
             // Speech bubble with dialogue (center)
             ZStack {
-                BundleImage("Speech Bubble Small", contentMode: .fit)
+                Image("Speech Bubble Small")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: w * 0.30, height: w * 0.30)
 
                 TypewriterText(

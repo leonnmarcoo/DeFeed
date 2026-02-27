@@ -29,7 +29,8 @@ struct OnboardingView: View {
 
             ZStack(alignment: .topLeading) {
                 // MARK: - Background (full bleed)
-                BundleImage("Onboarding Background")
+                Image("Stats Panel Green")
+                    .resizable()
                     .ignoresSafeArea()
 
                 // MARK: - Top Shadow Gradient
@@ -42,12 +43,16 @@ struct OnboardingView: View {
                 .ignoresSafeArea()
 
                 // MARK: - Dr. Doomscroll Pose (bottom area)
-                BundleImage("Dr Doomscroll")
+                Image("Dr Doomscroll Pose 1")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: w * 0.875, height: h * 0.333)
                     .position(x: w * 0.50, y: h * 0.83)
 
                 // MARK: - Speech Bubble
-                BundleImage("Speech Bubble", contentMode: .fit)
+                Image("Speech Bubble Small")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
                     .frame(width: w * 0.60, height: w * 0.60)
                     .position(x: w * 0.64, y: h * 0.55)
 

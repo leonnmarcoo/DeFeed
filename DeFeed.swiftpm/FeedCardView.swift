@@ -14,7 +14,8 @@ struct FeedCardView: View {
 
             ZStack {
                 // MARK: - Content Image
-                BundleImage(card.contentImage)
+                Image(card.contentImage)
+                    .resizable()
                     .clipShape(RoundedRectangle(cornerRadius: 30))
                     .frame(width: w * 0.92, height: h * 0.95)
                     .position(x: w * 0.50, y: h * 0.48)
@@ -44,9 +45,10 @@ struct FeedCardView: View {
     private func actionButtons(w: CGFloat, h: CGFloat) -> some View {
         let buttonSize: CGFloat = w * 0.077
         VStack(spacing: w * 0.04) {
-            BundleImage("Heart Button", contentMode: .fit)
+            Image(systemName: "heart.fill")
+                .font(.system(size: buttonSize * 0.7))
+                .foregroundColor(.white)
                 .frame(width: buttonSize, height: buttonSize)
-                .clipShape(Circle())
 
             Image(systemName: "flame.fill")
                 .font(.system(size: buttonSize * 0.7))

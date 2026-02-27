@@ -39,7 +39,7 @@ let package = Package(
             name: "AppModule",
             path: ".",
             resources: [
-                .copy("Assets")
+                .copy("Font")
             ]
         )
     ],
