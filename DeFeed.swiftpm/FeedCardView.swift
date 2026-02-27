@@ -45,10 +45,11 @@ struct FeedCardView: View {
     private func actionButtons(w: CGFloat, h: CGFloat) -> some View {
         let buttonSize: CGFloat = w * 0.077
         VStack(spacing: w * 0.04) {
-            Image(systemName: "heart.fill")
-                .font(.system(size: buttonSize * 0.7))
-                .foregroundColor(.white)
+            Image("Profile")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
                 .frame(width: buttonSize, height: buttonSize)
+                .clipShape(Circle())
 
             Image(systemName: "flame.fill")
                 .font(.system(size: buttonSize * 0.7))

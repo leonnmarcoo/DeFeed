@@ -48,25 +48,42 @@ struct InputView: View {
                     Spacer()
                         .frame(height: h * 0.04)
 
-                    // MARK: - Number Labels (1–10)
-                    HStack(spacing: 0) {
-                        ForEach(1...10, id: \.self) { num in
-                            Text("\(num)")
-                                .font(.custom("ComicNeue-Bold", size: numberFontSize(width: w)))
+                    if submitted {
+                        // MARK: - Screen Time Summary Text
+                        VStack(spacing: h * 0.01) {
+                            Text("\(Int(sliderValue))")
+                                .font(.custom("ComicNeue-Bold", size: titleFontSize(width: w) * 2))
                                 .foregroundColor(.white)
-                                .shadow(color: .black.opacity(0.4), radius: 2, x: 1, y: 1)
-                                .frame(maxWidth: .infinity)
+                                .shadow(color: .black.opacity(0.5), radius: 4, x: 2, y: 2)
+
+                            Text("hours a day on your screen.")
+                                .font(.custom("ComicNeue-Regular", size: numberFontSize(width: w)))
+                                .foregroundColor(.white.opacity(0.85))
+                                .shadow(color: .black.opacity(0.3), radius: 2, x: 1, y: 1)
                         }
-                    }
-                    .padding(.horizontal, w * 0.08)
-
-                    Spacer()
-                        .frame(height: h * 0.01)
-
-                    // MARK: - Slider
-                    Slider(value: $sliderValue, in: 1...10, step: 1)
-                        .accentColor(.white)
+                        .multilineTextAlignment(.center)
                         .padding(.horizontal, w * 0.08)
+                    } else {
+                        // MARK: - Number Labels (1–10)
+                        HStack(spacing: 0) {
+                            ForEach(1...10, id: \.self) { num in
+                                Text("\(num)")
+                                    .font(.custom("ComicNeue-Bold", size: numberFontSize(width: w)))
+                                    .foregroundColor(.white)
+                                    .shadow(color: .black.opacity(0.4), radius: 2, x: 1, y: 1)
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
+                        .padding(.horizontal, w * 0.08)
+
+                        Spacer()
+                            .frame(height: h * 0.01)
+
+                        // MARK: - Slider
+                        Slider(value: $sliderValue, in: 1...10, step: 1)
+                            .accentColor(.white)
+                            .padding(.horizontal, w * 0.08)
+                    }
 
                     Spacer()
                         .frame(height: h * 0.04)
@@ -107,6 +124,7 @@ struct InputView: View {
                             .id(dialogueId)
                             .multilineTextAlignment(.center)
                             .frame(width: w * 0.40, alignment: .center)
+                            .offset(y: -w * 0.04)
                         }
                         .frame(width: w * 0.60, height: w * 0.60)
                         .offset(x: w * 0.38, y: -h * 0.08)
