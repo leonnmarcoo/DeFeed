@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject private var appState: AppState
+    private let audioManager = AudioManager.shared
 
     var body: some View {
         ZStack {
@@ -28,5 +29,11 @@ struct ContentView: View {
             }
         }
         .animation(.easeInOut(duration: 0.5), value: appState.phase)
+        .onChange(of: appState.phase) { newPhase in
+            audioManager.playMusic(for: newPhase)
+        }
+        .onAppear {
+            audioManager.playMusic(for: appState.phase)
+        }
     }
 }
