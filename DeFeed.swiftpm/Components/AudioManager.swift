@@ -63,7 +63,7 @@ final class AudioManager: ObservableObject {
             return "Onboarding music"
         case .feed:
             return "Act 1"
-        case .input, .statistics, .defeat:
+        case .input, .statistics:
             return "Act 2"
         }
     }

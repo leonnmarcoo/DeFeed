@@ -30,7 +30,7 @@ struct CardData: Identifiable {
         CardData(
             id: 3,
             contentImage: "Feed Content 3",
-            dialogue: "Everyone looks busy. Everyone feels alone. Scrolling together, separately",
+            dialogue: "Everyone looks busy, but still, everyone feels alone.",
             username: "@RelatableFeels",
             caption: "POV: Surrounded by people but totally alone. #connection #lonely #socialmedia #fyp",
             hpGain: 20

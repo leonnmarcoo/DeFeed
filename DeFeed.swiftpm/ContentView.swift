@@ -22,10 +22,6 @@ struct ContentView: View {
             case .statistics:
                 StatisticsView()
                     .transition(.opacity)
-
-            case .defeat:
-                DefeatView()
-                    .transition(.opacity)
             }
         }
         .animation(.easeInOut(duration: 0.5), value: appState.phase)

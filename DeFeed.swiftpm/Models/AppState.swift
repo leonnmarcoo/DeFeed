@@ -5,7 +5,6 @@ enum AppPhase {
     case feed
     case input
     case statistics
-    case defeat
 }
 
 @MainActor

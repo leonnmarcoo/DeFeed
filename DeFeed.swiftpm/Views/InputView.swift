@@ -40,7 +40,7 @@ struct InputView: View {
                         .frame(height: h * 0.07)
 
                     // MARK: - Title
-                    Text("Screen Time Slider")
+                    Text(submitted ? "Your Screen Time" : "Screen Time Slider")
                         .font(.custom("ComicNeue-Bold", size: titleFontSize(width: w)))
                         .foregroundColor(.white)
                         .shadow(color: .black.opacity(0.5), radius: 4, x: 2, y: 2)
@@ -178,6 +178,6 @@ struct InputView: View {
 
     private func dialogueFontSize(width: CGFloat) -> CGFloat {
         let s = width / 834
-        return max(14, 20 * s)
+        return max(16, 24 * s)
     }
 }

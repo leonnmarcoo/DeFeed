@@ -56,7 +56,7 @@ struct StatisticsView: View {
 
             ZStack {
                 // Dark background behind the panels
-                Color.black
+                Color.white
                     .ignoresSafeArea()
 
                 VStack(spacing: pad) {
@@ -94,21 +94,6 @@ struct StatisticsView: View {
                 .padding(.horizontal, pad)
                 .padding(.top, h * 0.02)
 
-                // MARK: - "Tap to Continue" (after all panels shown)
-                if showContinue {
-                    VStack {
-                        Spacer()
-                        Text("Tap to Continue")
-                            .font(.custom("ComicNeue-Bold", size: titleFontSize(width: w)))
-                            .foregroundColor(.white)
-                            .shadow(color: .black.opacity(0.8), radius: 4, x: 2, y: 2)
-                            .opacity(titlePulse ? 0.6 : 1.0)
-                            .padding(.bottom, h * 0.03)
-                    }
-                }
-            }
-            .onTapGesture {
-                handleTap()
             }
         }
         .ignoresSafeArea()
@@ -280,13 +265,10 @@ struct StatisticsView: View {
         }
     }
 
-    // MARK: - Tap Handler
+    // MARK: - Tap Handler (no-op — Statistics is the final screen)
 
     private func handleTap() {
-        guard showContinue else { return }
-        withAnimation(.easeInOut(duration: 0.5)) {
-            appState.phase = .defeat
-        }
+        // Final screen — nothing to navigate to
     }
 
     // MARK: - Font Sizing
@@ -298,11 +280,11 @@ struct StatisticsView: View {
 
     private func panelBodyFont(width: CGFloat) -> CGFloat {
         let s = width / 834
-        return max(12, 18 * s)
+        return max(16, 24 * s)
     }
 
     private func panelBigFont(width: CGFloat) -> CGFloat {
         let s = width / 834
-        return max(28, 48 * s)
+        return max(36, 60 * s)
     }
 }

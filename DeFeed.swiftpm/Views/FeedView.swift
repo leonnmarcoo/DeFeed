@@ -173,6 +173,6 @@ struct FeedView: View {
 
     private func dialogueFontSize(width: CGFloat) -> CGFloat {
         let s = width / 834
-        return max(11, 14 * s)
+        return max(14, 20 * s)
     }
 }
