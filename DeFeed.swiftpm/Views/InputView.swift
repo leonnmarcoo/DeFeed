@@ -63,12 +63,12 @@ struct InputView: View {
                             Text("\(Int(sliderValue))")
                                 .font(.custom("ComicNeue-Bold", size: titleFontSize(width: w) * 2))
                                 .foregroundColor(.white)
-                                .shadow(color: .black.opacity(0.5), radius: 4, x: 2, y: 2)
+                                .comicOutline()
 
                             Text("hours a day on your screen.")
                                 .font(.custom("ComicNeue-Regular", size: numberFontSize(width: w)))
-                                .foregroundColor(.white.opacity(0.85))
-                                .shadow(color: .black.opacity(0.3), radius: 2, x: 1, y: 1)
+                                .foregroundColor(.white)
+                                .comicOutline()
                         }
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, w * 0.08)
@@ -79,7 +79,7 @@ struct InputView: View {
                                 Text("\(num)")
                                     .font(.custom("ComicNeue-Bold", size: numberFontSize(width: w)))
                                     .foregroundColor(.white)
-                                    .shadow(color: .black.opacity(0.4), radius: 2, x: 1, y: 1)
+                                    .comicOutline()
                                     .frame(maxWidth: .infinity)
                             }
                         }

@@ -31,6 +31,8 @@ struct HPBarView: View {
             ZStack {
                 Circle()
                     .fill(.white)
+                Circle()
+                    .stroke(Color.black, lineWidth: 3)
                 Image(systemName: "heart.fill")
                     .font(.title2)
                     .foregroundColor(Color(red: 0.85, green: 0.13, blue: 0.14)) // #D92025
@@ -53,6 +55,11 @@ struct HPBarView: View {
                         .fill(barColor)
                         .frame(width: barWidth * fillFraction, height: barHeight)
                         .animation(.easeInOut(duration: 0.6), value: fillFraction)
+
+                    // Black outline
+                    RoundedRectangle(cornerRadius: barHeight / 2)
+                        .stroke(Color.black, lineWidth: 3)
+                        .frame(width: barWidth, height: barHeight)
                 }
             }
             .frame(height: 24)

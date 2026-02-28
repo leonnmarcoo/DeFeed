@@ -8,6 +8,9 @@ import SwiftUI
 struct StatisticsView: View {
     @EnvironmentObject private var appState: AppState
 
+    /// Vivid comic-book red for screen time visualizations
+    private let comicRed = Color(red: 0.90, green: 0.10, blue: 0.10)
+
     // MARK: - Navigation State
     @State private var currentPanel: Int = 0
     @State private var isTransitioning: Bool = false
@@ -166,17 +169,10 @@ struct StatisticsView: View {
     private func animateWeek() {
         weekFillProgress = 0
         weekRedPulse = false
-        let neutralPortion: CGFloat = 96.0 / 168.0 // sleep + work ≈ 96h
-        let redPortion: CGFloat = CGFloat(weeklyHours) / 168.0
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             withAnimation(.easeInOut(duration: 1.5)) {
-                weekFillProgress = neutralPortion + redPortion
-            }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
-            withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
-                weekRedPulse = true
+                weekFillProgress = 1.0
             }
         }
     }
@@ -250,12 +246,12 @@ struct StatisticsView: View {
                 Text("\(weeklyHours)")
                     .font(.custom("ComicNeue-Bold", size: bigNumberFont(width: w)))
                     .foregroundColor(.white)
-                    .shadow(color: .black.opacity(0.6), radius: 6, x: 2, y: 3)
+                    .comicOutline()
 
                 Text("hours swallowed by the feed.")
                     .font(.custom("ComicNeue-Regular", size: bodyFont(width: w)))
                     .foregroundColor(.white)
-                    .shadow(color: .black.opacity(0.4), radius: 3, x: 1, y: 1)
+                    .comicOutline()
 
                 Spacer()
 
@@ -271,56 +267,27 @@ struct StatisticsView: View {
     private func weekTimeBar(w: CGFloat, h: CGFloat) -> some View {
         let barWidth = w * 0.82
         let barHeight: CGFloat = h * 0.05
-        let neutralRatio: CGFloat = 96.0 / 168.0
-        let totalFill = weekFillProgress * barWidth
-        let neutralWidth = min(totalFill, neutralRatio * barWidth)
-        let redWidth = max(0, totalFill - neutralRatio * barWidth)
+        let screenRatio = min(CGFloat(weeklyHours) / 168.0, 1.0)
+        let redWidth = weekFillProgress * screenRatio * barWidth
 
         VStack(spacing: 8) {
             ZStack(alignment: .leading) {
                 // Background track
                 RoundedRectangle(cornerRadius: barHeight / 2)
-                    .fill(Color.white.opacity(0.3))
+                    .fill(Color.white)
                     .frame(width: barWidth, height: barHeight)
 
-                // Filled segments
-                HStack(spacing: 0) {
-                    if neutralWidth > 0 {
-                        UnevenRoundedRectangle(
-                            topLeadingRadius: barHeight / 2,
-                            bottomLeadingRadius: barHeight / 2,
-                            bottomTrailingRadius: 0,
-                            topTrailingRadius: 0
-                        )
-                        .fill(Color.white.opacity(0.7))
-                        .frame(width: neutralWidth, height: barHeight)
-                    }
-                    if redWidth > 0 {
-                        Rectangle()
-                            .fill(Color.red)
-                            .frame(width: redWidth, height: barHeight)
-                    }
+                // Red fill from left — screen time
+                if redWidth > 0 {
+                    RoundedRectangle(cornerRadius: barHeight / 2)
+                        .fill(comicRed)
+                        .frame(width: redWidth, height: barHeight)
                 }
-                .clipShape(RoundedRectangle(cornerRadius: barHeight / 2))
-                .frame(width: barWidth, alignment: .leading)
             }
             .overlay(
                 RoundedRectangle(cornerRadius: barHeight / 2)
-                    .stroke(Color.white, lineWidth: 2)
+                    .stroke(Color.black, lineWidth: 3)
             )
-
-            // Labels beneath the bar
-            HStack {
-                Text("Sleep + Work")
-                    .font(.custom("ComicNeue-Regular", size: smallFont(width: w)))
-                    .foregroundColor(.white)
-                Spacer()
-                Text("\(weeklyHours)h scrolling")
-                    .font(.custom("ComicNeue-Bold", size: smallFont(width: w)))
-                    .foregroundColor(.red)
-                Spacer()
-            }
-            .frame(width: barWidth)
         }
     }
 
@@ -349,12 +316,12 @@ struct StatisticsView: View {
                 Text(String(format: "%.1f", monthlyDays))
                     .font(.custom("ComicNeue-Bold", size: bigNumberFont(width: w)))
                     .foregroundColor(.white)
-                    .shadow(color: .black.opacity(0.6), radius: 6, x: 2, y: 3)
+                    .comicOutline()
 
                 Text("full days gone. Every month.")
                     .font(.custom("ComicNeue-Regular", size: bodyFont(width: w)))
                     .foregroundColor(.white)
-                    .shadow(color: .black.opacity(0.4), radius: 3, x: 1, y: 1)
+                    .comicOutline()
 
                 Spacer()
 
@@ -384,30 +351,25 @@ struct StatisticsView: View {
                 ZStack {
                     // Base tile
                     RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.white.opacity(0.25))
+                        .fill(Color.white)
                         .frame(width: tileSize, height: tileSize)
 
                     if isRevealed {
                         if day < fullRedDays {
                             // Fully consumed day
                             RoundedRectangle(cornerRadius: 4)
-                                .fill(Color.red)
+                                .fill(comicRed)
                                 .frame(width: tileSize, height: tileSize)
                         } else if day == fullRedDays && partialFraction > 0 {
                             // Partially consumed day
                             HStack(spacing: 0) {
                                 Rectangle()
-                                    .fill(Color.red)
+                                    .fill(comicRed)
                                     .frame(width: tileSize * partialFraction)
                                 Spacer(minLength: 0)
                             }
                             .frame(width: tileSize, height: tileSize)
                             .clipShape(RoundedRectangle(cornerRadius: 4))
-                        } else {
-                            // Normal day
-                            RoundedRectangle(cornerRadius: 4)
-                                .fill(Color.white.opacity(0.5))
-                                .frame(width: tileSize, height: tileSize)
                         }
                     }
 
@@ -415,10 +377,11 @@ struct StatisticsView: View {
                     Text("\(day + 1)")
                         .font(.custom("ComicNeue-Bold", size: smallFont(width: w)))
                         .foregroundColor(.white)
+                        .comicOutline()
                 }
                 .overlay(
                     RoundedRectangle(cornerRadius: 4)
-                        .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                        .stroke(Color.black, lineWidth: 2)
                 )
             }
         }
@@ -432,7 +395,7 @@ struct StatisticsView: View {
     @ViewBuilder
     private func yearPanelFull(w: CGFloat, h: CGFloat) -> some View {
         ZStack {
-            Image("Stats Panel Red")
+            Image("Stats Panel Green")
                 .resizable()
                 .ignoresSafeArea()
 
@@ -450,12 +413,12 @@ struct StatisticsView: View {
                 Text(String(format: "%.1f", yearlyWeeks))
                     .font(.custom("ComicNeue-Bold", size: bigNumberFont(width: w)))
                     .foregroundColor(.white)
-                    .shadow(color: .black.opacity(0.6), radius: 6, x: 2, y: 3)
+                    .comicOutline()
 
                 Text("weeks. Every year.")
                     .font(.custom("ComicNeue-Regular", size: bodyFont(width: w)))
                     .foregroundColor(.white)
-                    .shadow(color: .black.opacity(0.4), radius: 3, x: 1, y: 1)
+                    .comicOutline()
 
                 Spacer()
 
@@ -475,34 +438,40 @@ struct StatisticsView: View {
         ZStack {
             // Background ring — full year
             Circle()
-                .stroke(Color.white.opacity(0.3), lineWidth: lineWidth)
+                .stroke(Color.white, lineWidth: lineWidth)
                 .frame(width: arcSize, height: arcSize)
 
             // Red arc — scrolling weeks
             Circle()
                 .trim(from: 0, to: yearArcTrim)
                 .stroke(
-                    Color.red,
+                    comicRed,
                     style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))
                 .frame(width: arcSize, height: arcSize)
+
+            // Black outline on the ring
+            Circle()
+                .stroke(Color.black, lineWidth: 2)
+                .frame(width: arcSize + lineWidth, height: arcSize + lineWidth)
+            Circle()
+                .stroke(Color.black, lineWidth: 2)
+                .frame(width: arcSize - lineWidth, height: arcSize - lineWidth)
 
             // Center label
             VStack(spacing: 2) {
                 Text(String(format: "%.1f", yearlyWeeks * Double(yearArcTrim > 0 ? 1 : 0)))
                     .font(.custom("ComicNeue-Bold", size: captionFont(width: w) * 1.6))
                     .foregroundColor(.white)
+                    .comicOutline()
                 Text("weeks")
                     .font(.custom("ComicNeue-Regular", size: smallFont(width: w)))
                     .foregroundColor(.white)
+                    .comicOutline()
             }
         }
         .padding(lineWidth / 2 + 14)
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(Color.white, lineWidth: 2)
-        )
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -512,7 +481,7 @@ struct StatisticsView: View {
     @ViewBuilder
     private func lifetimePanelFull(w: CGFloat, h: CGFloat) -> some View {
         ZStack {
-            Image("Stats Panel Green")
+            Image("Stats Panel Blue")
                 .resizable()
                 .ignoresSafeArea()
 
@@ -530,13 +499,13 @@ struct StatisticsView: View {
                 Text(String(format: "%.1f", lifetimeYears))
                     .font(.custom("ComicNeue-Bold", size: bigNumberFont(width: w)))
                     .foregroundColor(.white)
-                    .shadow(color: .black.opacity(0.6), radius: 6, x: 2, y: 3)
+                    .comicOutline()
 
                 Text("years of your life.\nHanded to the feed.")
                     .font(.custom("ComicNeue-Regular", size: bodyFont(width: w)))
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
-                    .shadow(color: .black.opacity(0.4), radius: 3, x: 1, y: 1)
+                    .comicOutline()
 
                 Spacer()
 
@@ -557,37 +526,34 @@ struct StatisticsView: View {
 
         HStack(spacing: w * 0.015) {
             ForEach(0..<totalFigures, id: \.self) { index in
-                let reverseIndex = totalFigures - 1 - index
-                let isFullLost = Double(reverseIndex) < floor(lostFigures)
-                let isPartialLost = Double(reverseIndex) < lostFigures && !isFullLost
+                let isFullLost = Double(index) < floor(lostFigures)
+                let isPartialLost = Double(index) < lostFigures && !isFullLost
                 let crackAmount = isFullLost ? lifetimeReveal : (isPartialLost ? lifetimeReveal * CGFloat(lostFigures - floor(lostFigures)) : 0)
                 let isAffected = crackAmount > 0
 
                 VStack(spacing: 4) {
                     Image(systemName: "figure.stand")
                         .font(.system(size: figureSize))
-                        .foregroundColor(isAffected ? .red : .white)
+                        .foregroundColor(isAffected ? comicRed : .white)
+                        .comicOutline()
                         .rotationEffect(isAffected && lifetimeReveal > 0.5
-                            ? .degrees(Double(reverseIndex % 2 == 0 ? -5 : 5))
+                            ? .degrees(Double(index % 2 == 0 ? -5 : 5))
                             : .zero)
                         .scaleEffect(isAffected && lifetimeReveal > 0.5 ? 0.88 : 1.0)
 
                     Text(decadeLabel(index))
                         .font(.custom("ComicNeue-Regular", size: smallFont(width: w) * 0.85))
                         .foregroundColor(.white)
+                        .comicOutline()
                 }
             }
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 14)
-        .overlay(
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(Color.white, lineWidth: 2)
-        )
     }
 
     private func decadeLabel(_ index: Int) -> String {
-        let labels = ["13", "23", "33", "43", "53", "63"]
+        let labels = ["13", "18", "23", "28", "33", "38", "43", "48", "53", "58", "63", "68"]
         return index < labels.count ? labels[index] : ""
     }
 
@@ -597,7 +563,7 @@ struct StatisticsView: View {
 
     @ViewBuilder
     private func wrapPanelFull(w: CGFloat, h: CGFloat) -> some View {
-        let pad: CGFloat = w * 0.03
+        let pad: CGFloat = w * 0.04
         let panelW = (w - pad * 3) / 2
 
         ZStack {
@@ -607,25 +573,13 @@ struct StatisticsView: View {
                 Spacer(minLength: 0)
                 // Top row: Week | Month
                 HStack(spacing: pad) {
-                    wrapStatPanel(
-                        imageName: "Stats Panel Blue",
-                        topText: "Every week, you feed me",
-                        bigText: "\(weeklyHours)",
-                        bottomText: "hours",
-                        width: panelW, height: h * 0.30, screenWidth: w
-                    )
-                    .opacity(wrapPanelsRevealed >= 1 ? 1 : 0)
-                    .scaleEffect(wrapPanelsRevealed >= 1 ? 1 : 0.9)
+                    wrapWeekPanel(width: panelW, height: h * 0.30, screenWidth: w)
+                        .opacity(wrapPanelsRevealed >= 1 ? 1 : 0)
+                        .scaleEffect(wrapPanelsRevealed >= 1 ? 1 : 0.9)
 
-                    wrapStatPanel(
-                        imageName: "Stats Panel Yellow",
-                        topText: "Each month, that becomes",
-                        bigText: String(format: "%.1f", monthlyDays),
-                        bottomText: "days erased",
-                        width: panelW, height: h * 0.30, screenWidth: w
-                    )
-                    .opacity(wrapPanelsRevealed >= 2 ? 1 : 0)
-                    .scaleEffect(wrapPanelsRevealed >= 2 ? 1 : 0.9)
+                    wrapMonthPanel(width: panelW, height: h * 0.30, screenWidth: w)
+                        .opacity(wrapPanelsRevealed >= 2 ? 1 : 0)
+                        .scaleEffect(wrapPanelsRevealed >= 2 ? 1 : 0.9)
                 }
 
                 // Middle: Container (green, full width)
@@ -635,75 +589,255 @@ struct StatisticsView: View {
 
                 // Bottom row: Year | Lifetime
                 HStack(spacing: pad) {
-                    wrapStatPanel(
-                        imageName: "Stats Panel Red",
-                        topText: "Per year...",
-                        bigText: String(format: "%.1f", yearlyWeeks),
-                        bottomText: "weeks\nvanish into the void",
-                        width: panelW, height: h * 0.28, screenWidth: w
-                    )
-                    .opacity(wrapPanelsRevealed >= 4 ? 1 : 0)
-                    .scaleEffect(wrapPanelsRevealed >= 4 ? 1 : 0.9)
+                    wrapYearPanel(width: panelW, height: h * 0.28, screenWidth: w)
+                        .opacity(wrapPanelsRevealed >= 4 ? 1 : 0)
+                        .scaleEffect(wrapPanelsRevealed >= 4 ? 1 : 0.9)
 
-                    wrapStatPanel(
-                        imageName: "Stats Panel Blue",
-                        topText: "Across a lifetime, that's",
-                        bigText: String(format: "%.1f", lifetimeYears),
-                        bottomText: "years\nyou won't get back",
-                        width: panelW, height: h * 0.28, screenWidth: w
-                    )
-                    .opacity(wrapPanelsRevealed >= 5 ? 1 : 0)
-                    .scaleEffect(wrapPanelsRevealed >= 5 ? 1 : 0.9)
+                    wrapLifetimePanel(width: panelW, height: h * 0.28, screenWidth: w)
+                        .opacity(wrapPanelsRevealed >= 5 ? 1 : 0)
+                        .scaleEffect(wrapPanelsRevealed >= 5 ? 1 : 0.9)
                 }
                 Spacer(minLength: 0)
             }
-            .padding(.horizontal, pad)
+            .padding(pad)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
-    @ViewBuilder
-    private func wrapStatPanel(
-        imageName: String,
-        topText: String,
-        bigText: String,
-        bottomText: String,
-        width: CGFloat,
-        height: CGFloat,
-        screenWidth: CGFloat
-    ) -> some View {
-        ZStack {
-            Image(imageName)
-                .resizable()
-                .frame(width: width, height: height)
+    // MARK: - Wrap Sub-Panels with Mini Visualizations
 
-            VStack(spacing: 4) {
-                Text(topText)
+    @ViewBuilder
+    private func wrapWeekPanel(width: CGFloat, height: CGFloat, screenWidth: CGFloat) -> some View {
+        let barW = width * 0.70
+        let barH = max(6, height * 0.04)
+        let screenRatio = min(CGFloat(weeklyHours) / 168.0, 1.0)
+
+        ZStack {
+            Image("Stats Panel Blue").resizable().frame(width: width, height: height)
+
+            VStack(spacing: 2) {
+                Text("Every week")
                     .font(.custom("ComicNeue-Regular", size: wrapBodyFont(width: screenWidth)))
                     .foregroundColor(.white)
-                Text(bigText)
+                    .comicOutline()
+
+                Spacer(minLength: 0)
+
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: barH / 2)
+                        .fill(Color.white)
+                        .frame(width: barW, height: barH)
+                    if screenRatio > 0 {
+                        RoundedRectangle(cornerRadius: barH / 2)
+                            .fill(comicRed)
+                            .frame(width: barW * screenRatio, height: barH)
+                    }
+                }
+                .overlay(
+                    RoundedRectangle(cornerRadius: barH / 2)
+                        .stroke(Color.black, lineWidth: 2)
+                )
+
+                Spacer(minLength: 0)
+
+                Text("\(weeklyHours)")
                     .font(.custom("ComicNeue-Bold", size: wrapBigFont(width: screenWidth)))
                     .foregroundColor(.white)
-                Text(bottomText)
+                    .comicOutline()
+                Text("hours staring\nat screen")
                     .font(.custom("ComicNeue-Regular", size: wrapBodyFont(width: screenWidth)))
                     .foregroundColor(.white)
+                    .comicOutline()
             }
             .multilineTextAlignment(.center)
-            .shadow(color: .black.opacity(0.5), radius: 3, x: 1, y: 1)
-            .padding(12)
+            .padding(10)
         }
         .frame(width: width, height: height)
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.black, lineWidth: 3)
-        )
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.black, lineWidth: 3))
+    }
+
+    @ViewBuilder
+    private func wrapMonthPanel(width: CGFloat, height: CGFloat, screenWidth: CGFloat) -> some View {
+        let cols = 6
+        let tileSpacing: CGFloat = 2
+        let gridPad: CGFloat = width * 0.25
+        let usableW = width - gridPad * 2
+        let tileSize = (usableW - tileSpacing * CGFloat(cols - 1)) / CGFloat(cols)
+        let fullRedDays = Int(monthlyDays)
+        let partialFraction = CGFloat(monthlyDays - floor(monthlyDays))
+
+        ZStack {
+            Image("Stats Panel Yellow").resizable().frame(width: width, height: height)
+
+            VStack(spacing: 2) {
+                Text("Each month")
+                    .font(.custom("ComicNeue-Regular", size: wrapBodyFont(width: screenWidth)))
+                    .foregroundColor(.white)
+                    .comicOutline()
+
+                Spacer(minLength: 0)
+
+                let gridColumns = Array(repeating: GridItem(.fixed(tileSize), spacing: tileSpacing), count: cols)
+                LazyVGrid(columns: gridColumns, spacing: tileSpacing) {
+                    ForEach(0..<30, id: \.self) { day in
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 2)
+                                .fill(Color.white)
+                                .frame(width: tileSize, height: tileSize)
+                            if day < fullRedDays {
+                                RoundedRectangle(cornerRadius: 2)
+                                    .fill(comicRed)
+                                    .frame(width: tileSize, height: tileSize)
+                            } else if day == fullRedDays && partialFraction > 0 {
+                                HStack(spacing: 0) {
+                                    Rectangle()
+                                        .fill(comicRed)
+                                        .frame(width: tileSize * partialFraction)
+                                    Spacer(minLength: 0)
+                                }
+                                .frame(width: tileSize, height: tileSize)
+                                .clipShape(RoundedRectangle(cornerRadius: 2))
+                            }
+                        }
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 2)
+                                .stroke(Color.black, lineWidth: 1)
+                        )
+                    }
+                }
+                .padding(.horizontal, gridPad)
+
+                Spacer(minLength: 0)
+
+                Text(String(format: "%.1f", monthlyDays))
+                    .font(.custom("ComicNeue-Bold", size: wrapBigFont(width: screenWidth)))
+                    .foregroundColor(.white)
+                    .comicOutline()
+                Text("days erased")
+                    .font(.custom("ComicNeue-Regular", size: wrapBodyFont(width: screenWidth)))
+                    .foregroundColor(.white)
+                    .comicOutline()
+            }
+            .multilineTextAlignment(.center)
+            .padding(10)
+        }
+        .frame(width: width, height: height)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.black, lineWidth: 3))
+    }
+
+    @ViewBuilder
+    private func wrapYearPanel(width: CGFloat, height: CGFloat, screenWidth: CGFloat) -> some View {
+        let arcSize = min(width * 0.44, height * 0.34)
+        let lineW: CGFloat = arcSize * 0.12
+        let ratio = min(yearlyWeeks / 52.0, 1.0)
+
+        ZStack {
+            Image("Stats Panel Green").resizable().frame(width: width, height: height)
+
+            VStack(spacing: 2) {
+                Text("Per year")
+                    .font(.custom("ComicNeue-Regular", size: wrapBodyFont(width: screenWidth)))
+                    .foregroundColor(.white)
+                    .comicOutline()
+
+                Spacer(minLength: 0)
+
+                ZStack {
+                    Circle()
+                        .stroke(Color.white, lineWidth: lineW)
+                        .frame(width: arcSize, height: arcSize)
+                    Circle()
+                        .trim(from: 0, to: ratio)
+                        .stroke(comicRed, style: StrokeStyle(lineWidth: lineW, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                        .frame(width: arcSize, height: arcSize)
+                    Circle()
+                        .stroke(Color.black, lineWidth: 1.5)
+                        .frame(width: arcSize + lineW, height: arcSize + lineW)
+                    Circle()
+                        .stroke(Color.black, lineWidth: 1.5)
+                        .frame(width: arcSize - lineW, height: arcSize - lineW)
+                }
+                .padding(lineW / 2 + 4)
+
+                Spacer(minLength: 0)
+
+                Text(String(format: "%.1f", yearlyWeeks))
+                    .font(.custom("ComicNeue-Bold", size: wrapBigFont(width: screenWidth)))
+                    .foregroundColor(.white)
+                    .comicOutline()
+                Text("weeks gone")
+                    .font(.custom("ComicNeue-Regular", size: wrapBodyFont(width: screenWidth)))
+                    .foregroundColor(.white)
+                    .comicOutline()
+            }
+            .multilineTextAlignment(.center)
+            .padding(10)
+        }
+        .frame(width: width, height: height)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.black, lineWidth: 3))
+    }
+
+    @ViewBuilder
+    private func wrapLifetimePanel(width: CGFloat, height: CGFloat, screenWidth: CGFloat) -> some View {
+        let totalFigures = 12
+        let yearsPerFigure = 59.0 / Double(totalFigures)
+        let lostFigures = lifetimeYears / yearsPerFigure
+        let figSize = width * 0.09
+
+        ZStack {
+            Image("Stats Panel Blue").resizable().frame(width: width, height: height)
+
+            VStack(spacing: 2) {
+                Text("A lifetime")
+                    .font(.custom("ComicNeue-Regular", size: wrapBodyFont(width: screenWidth)))
+                    .foregroundColor(.white)
+                    .comicOutline()
+
+                Spacer(minLength: 0)
+
+                // Mini silhouettes — 2 rows of 6
+                VStack(spacing: 4) {
+                    ForEach(0..<2, id: \.self) { row in
+                        HStack(spacing: width * 0.012) {
+                            ForEach(0..<6, id: \.self) { col in
+                                let index = row * 6 + col
+                                let isLost = Double(index) < lostFigures
+                                Image(systemName: "figure.stand")
+                                    .font(.system(size: figSize))
+                                    .foregroundColor(isLost ? comicRed : .white)
+                                    .comicOutline()
+                            }
+                        }
+                    }
+                }
+
+                Spacer(minLength: 0)
+
+                Text(String(format: "%.1f", lifetimeYears))
+                    .font(.custom("ComicNeue-Bold", size: wrapBigFont(width: screenWidth)))
+                    .foregroundColor(.white)
+                    .comicOutline()
+                Text("years lost")
+                    .font(.custom("ComicNeue-Regular", size: wrapBodyFont(width: screenWidth)))
+                    .foregroundColor(.white)
+                    .comicOutline()
+            }
+            .multilineTextAlignment(.center)
+            .padding(10)
+        }
+        .frame(width: width, height: height)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.black, lineWidth: 3))
     }
 
     @ViewBuilder
     private func wrapContainerPanel(width: CGFloat, height: CGFloat, screenWidth: CGFloat) -> some View {
         ZStack {
-            Image("Stats Panel Green")
+            Image("Stats Panel Red")
                 .resizable()
                 .frame(width: width, height: height)
 
@@ -711,7 +845,8 @@ struct StatisticsView: View {
                 Image("Dr Doomscroll Pose 3")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: width * 0.40, height: height * 0.85)
+                    .frame(width: width * 0.40, height: height * 0.90)
+                    .offset(y: height * 0.05)
 
                 VStack(spacing: 8) {
                     Text("No rewind.")
@@ -722,7 +857,7 @@ struct StatisticsView: View {
                         .font(.custom("ComicNeue-Bold", size: wrapBigFont(width: screenWidth)))
                 }
                 .foregroundColor(.white)
-                .shadow(color: .black.opacity(0.5), radius: 3, x: 1, y: 1)
+                .comicOutline()
                 .frame(maxWidth: .infinity)
             }
             .padding(12)
@@ -737,12 +872,12 @@ struct StatisticsView: View {
 
     private func wrapBodyFont(width: CGFloat) -> CGFloat {
         let s = width / 834
-        return max(12, 18 * s)
+        return max(16, 24 * s)
     }
 
     private func wrapBigFont(width: CGFloat) -> CGFloat {
         let s = width / 834
-        return max(28, 48 * s)
+        return max(36, 60 * s)
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
