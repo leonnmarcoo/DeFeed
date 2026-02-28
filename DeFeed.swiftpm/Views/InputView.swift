@@ -1,12 +1,5 @@
 import SwiftUI
 
-/// Act 2 — Screen 1: Screen Time Slider.
-///
-/// Two states:
-/// 1. Initial: Slider + "Continue" button.
-///    Dialogue: "Drag the bar to confess your daily screen time… I'm watching."
-/// 2. After submit: Button becomes "Reveal My Doomscroll Wrap".
-///    Dialogue: "Interesting… very interesting. Let me calculate your devotion to the scroll…"
 struct InputView: View {
     @EnvironmentObject private var appState: AppState
 
@@ -120,7 +113,6 @@ struct InputView: View {
 
                     // MARK: - Bottom section: Pose 2 + Dialogue Box
                     ZStack(alignment: .bottomLeading) {
-                        // Dialogue Box (right side)
                         SpeechBubbleView(tailDirection: .bottomLeft) {
                             TypewriterText(
                                 dialogueText,
@@ -135,7 +127,6 @@ struct InputView: View {
                         .frame(width: w * 0.55)
                         .offset(x: w * 0.38, y: -h * 0.22)
 
-                        // Dr. Doomscroll Pose 2 (bottom-left)
                         Image("Dr Doomscroll Pose 2")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
@@ -153,12 +144,10 @@ struct InputView: View {
 
     private func handleButtonTap() {
         if !submitted {
-            // First tap: lock in the slider value
             appState.dailyHours = sliderValue
             submitted = true
             dialogueId += 1
         } else {
-            // Second tap: proceed to statistics
             withAnimation(.easeInOut(duration: 0.5)) {
                 appState.phase = .statistics
             }

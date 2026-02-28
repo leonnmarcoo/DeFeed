@@ -1,9 +1,5 @@
 import SwiftUI
 
-/// A single feed card's content area (Cards 1–4).
-///
-/// Shows the content image, bottom shadow gradient, caption, and action buttons.
-/// The header (character, dialogue, HP) is handled by the parent FeedView.
 struct FeedCardView: View {
     let card: CardData
 

@@ -1,10 +1,5 @@
 import SwiftUI
 
-/// Act 1 — The Feed.
-///
-/// Layout: Fixed header (character, dialogue, HP) at top,
-/// scrollable content cards (with shadow, caption, buttons) beneath.
-/// Card 5 (Mirror) is a full-screen takeover.
 struct FeedView: View {
     @EnvironmentObject private var appState: AppState
 
@@ -49,7 +44,6 @@ struct FeedView: View {
         let headerHeight: CGFloat = h * 0.20
 
         ZStack {
-            // Background (full bleed)
             Image("Stats Panel Red")
                 .resizable()
                 .ignoresSafeArea()
@@ -96,14 +90,12 @@ struct FeedView: View {
     @ViewBuilder
     private func headerView(w: CGFloat, headerHeight: CGFloat) -> some View {
         ZStack {
-            // Dr. Doomscroll Pose 2 (left side)
             Image("Dr Doomscroll Pose 2")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: w * 0.24, height: headerHeight * 0.82)
                 .position(x: w * 0.155, y: headerHeight * 0.55)
 
-            // Speech bubble with dialogue (center)
             SpeechBubbleView(tailDirection: .bottomLeft, cornerRadius: 12, borderWidth: 2) {
                 TypewriterText(
                     cards[currentPage].dialogue,
@@ -118,7 +110,7 @@ struct FeedView: View {
             .frame(width: w * 0.40)
             .position(x: w * 0.43, y: headerHeight * 0.52)
 
-            // HP bar (right side)
+
             HPBarView(hp: appState.villainHP)
                 .frame(width: w * 0.30, height: 36)
                 .position(x: w * 0.78, y: headerHeight * 0.40)
@@ -136,7 +128,6 @@ struct FeedView: View {
                     currentPage += 1
                     dialogueId += 1
                 } else {
-                    // Last card → transition to mirror
                     showMirror = true
                 }
             } else if translation > threshold && currentPage > 0 {
@@ -146,7 +137,6 @@ struct FeedView: View {
             dragOffset = 0
         }
 
-        // Update HP with its own timing
         withAnimation(.easeInOut(duration: 0.6)) {
             appState.villainHP = showMirror ? 100 : hpForPage(currentPage)
         }

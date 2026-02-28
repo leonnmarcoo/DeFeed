@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// A view that reveals text one character at a time with a typewriter effect.
 struct TypewriterText: View {
     let fullText: String
     let font: Font

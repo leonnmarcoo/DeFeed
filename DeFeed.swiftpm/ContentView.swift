@@ -4,7 +4,6 @@ struct ContentView: View {
     @EnvironmentObject private var appState: AppState
     private let audioManager = AudioManager.shared
 
-    /// Tracks the phase currently being displayed (lags behind appState.phase during wipe).
     @State private var displayedPhase: AppPhase = .onboarding
     @State private var wipeProgress: CGFloat = 0
     @State private var isWiping: Bool = false
@@ -15,10 +14,8 @@ struct ContentView: View {
             let h = geo.size.height
 
             ZStack {
-                // Current view — no SwiftUI transition, swapped behind the ink wipe
                 phaseView(for: displayedPhase)
 
-                // Ink wipe overlay (same as StatisticsView)
                 inkWipeOverlay(w: w, h: h)
             }
             .frame(width: w, height: h)
@@ -74,13 +71,11 @@ struct ContentView: View {
         let generator = UIImpactFeedbackGenerator(style: .heavy)
         generator.impactOccurred()
 
-        // Phase 1: Ink sweeps in from left, covering screen
         wipeProgress = 0
         withAnimation(.easeIn(duration: 0.28)) {
             wipeProgress = 0.5
         }
 
-        // Phase 2: Swap content behind ink, then sweep out to right
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.28) {
             displayedPhase = newPhase
             audioManager.playMusic(for: newPhase)

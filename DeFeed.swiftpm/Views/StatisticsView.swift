@@ -1,25 +1,19 @@
 import SwiftUI
 
 // MARK: - StatisticsView
-/// Act 2 — Screen 2: Full-screen dramatic stat panels.
-///
-/// 4 panels shown one at a time: Week → Month → Year → Lifetime.
-/// User taps or swipes left to advance. Comic ink-wipe transition + haptic between panels.
 struct StatisticsView: View {
     @EnvironmentObject private var appState: AppState
 
-    /// Vivid comic-book red for screen time visualizations
     private let comicRed = Color(red: 0.90, green: 0.10, blue: 0.10)
 
     // MARK: - Navigation State
     @State private var currentPanel: Int = 0
     @State private var isTransitioning: Bool = false
     @State private var isAnimating: Bool = false
-    @State private var wipeProgress: CGFloat = 0    // 0 = off-screen left, 0.5 = covering, 1 = off-screen right
+    @State private var wipeProgress: CGFloat = 0
 
     // MARK: - Panel 1 (Week) Animation
     @State private var weekFillProgress: CGFloat = 0
-    @State private var weekRedPulse: Bool = false
 
     // MARK: - Panel 2 (Month) Animation
     @State private var monthTilesRevealed: Int = 0
@@ -52,10 +46,8 @@ struct StatisticsView: View {
             let h = geo.size.height
 
             ZStack {
-                // Current panel content
                 panelContent(index: currentPanel, w: w, h: h)
 
-                // Ink wipe overlay
                 inkWipeOverlay(w: w, h: h)
             }
             .frame(width: w, height: h)
@@ -98,13 +90,10 @@ struct StatisticsView: View {
 
     @ViewBuilder
     private func inkWipeOverlay(w: CGFloat, h: CGFloat) -> some View {
-        // wipeProgress: 0 = fully left (hidden), 0.5 = covering screen, 1.0 = fully right (hidden)
         let xOffset: CGFloat = {
             if wipeProgress <= 0.5 {
-                // Moving in from left: -w → 0
                 return -w + (wipeProgress / 0.5) * w
             } else {
-                // Moving out to right: 0 → w
                 return ((wipeProgress - 0.5) / 0.5) * w
             }
         }()
@@ -128,7 +117,6 @@ struct StatisticsView: View {
     // MARK: - Panel Transition
 
     private func handleAdvance(w: CGFloat) {
-        // Panel 5 (ending): final screen — nothing to advance to
         if currentPanel == 5 {
             return
         }
@@ -140,17 +128,14 @@ struct StatisticsView: View {
         guard currentPanel < 5 else { return }
         isTransitioning = true
 
-        // Haptic
         let generator = UIImpactFeedbackGenerator(style: .heavy)
         generator.impactOccurred()
 
-        // Phase 1: Ink sweeps in from left, covering screen
         wipeProgress = 0
         withAnimation(.easeIn(duration: 0.28)) {
             wipeProgress = 0.5
         }
 
-        // Phase 2: Switch content behind ink, then sweep out to right
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.28) {
             currentPanel += 1
 
@@ -182,7 +167,6 @@ struct StatisticsView: View {
 
     private func animateWeek() {
         weekFillProgress = 0
-        weekRedPulse = false
         isAnimating = true
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
@@ -284,12 +268,10 @@ struct StatisticsView: View {
 
                 Spacer()
 
-                // Time bar visualization
                 weekTimeBar(w: w, h: h)
 
                 Spacer().frame(height: h * 0.03)
 
-                // Big number
                 Text("\(weeklyHours)")
                     .font(.custom("ComicNeue-Bold", size: bigNumberFont(width: w)))
                     .foregroundColor(.white)
@@ -319,12 +301,10 @@ struct StatisticsView: View {
 
         VStack(spacing: 8) {
             ZStack(alignment: .leading) {
-                // Background track
                 RoundedRectangle(cornerRadius: barHeight / 2)
                     .fill(Color.white)
                     .frame(width: barWidth, height: barHeight)
 
-                // Red fill from left — screen time
                 if redWidth > 0 {
                     RoundedRectangle(cornerRadius: barHeight / 2)
                         .fill(comicRed)
@@ -396,19 +376,16 @@ struct StatisticsView: View {
                 let isRevealed = day < monthTilesRevealed
 
                 ZStack {
-                    // Base tile
                     RoundedRectangle(cornerRadius: 4)
                         .fill(Color.white)
                         .frame(width: tileSize, height: tileSize)
 
                     if isRevealed {
                         if day < fullRedDays {
-                            // Fully consumed day
                             RoundedRectangle(cornerRadius: 4)
                                 .fill(comicRed)
                                 .frame(width: tileSize, height: tileSize)
                         } else if day == fullRedDays && partialFraction > 0 {
-                            // Partially consumed day
                             HStack(spacing: 0) {
                                 Rectangle()
                                     .fill(comicRed)
@@ -420,7 +397,6 @@ struct StatisticsView: View {
                         }
                     }
 
-                    // Day number
                     Text("\(day + 1)")
                         .font(.custom("ComicNeue-Bold", size: smallFont(width: w)))
                         .foregroundColor(.white)
@@ -483,12 +459,10 @@ struct StatisticsView: View {
         let lineWidth: CGFloat = arcSize * 0.12
 
         ZStack {
-            // Background ring — full year
             Circle()
                 .stroke(Color.white, lineWidth: lineWidth)
                 .frame(width: arcSize, height: arcSize)
 
-            // Red arc — scrolling weeks
             Circle()
                 .trim(from: 0, to: yearArcTrim)
                 .stroke(
@@ -498,7 +472,6 @@ struct StatisticsView: View {
                 .rotationEffect(.degrees(-90))
                 .frame(width: arcSize, height: arcSize)
 
-            // Black outline on the ring
             Circle()
                 .stroke(Color.black, lineWidth: 2)
                 .frame(width: arcSize + lineWidth, height: arcSize + lineWidth)
@@ -506,7 +479,6 @@ struct StatisticsView: View {
                 .stroke(Color.black, lineWidth: 2)
                 .frame(width: arcSize - lineWidth, height: arcSize - lineWidth)
 
-            // Center label
             VStack(spacing: 2) {
                 Text(String(format: "%.1f", yearlyWeeks * Double(yearArcTrim > 0 ? 1 : 0)))
                     .font(.custom("ComicNeue-Bold", size: captionFont(width: w) * 1.6))
@@ -618,7 +590,6 @@ struct StatisticsView: View {
 
             VStack(spacing: pad) {
                 Spacer(minLength: 0)
-                // Top row: Week | Month
                 HStack(spacing: pad) {
                     wrapWeekPanel(width: panelW, height: h * 0.30, screenWidth: w)
                         .opacity(wrapPanelsRevealed >= 1 ? 1 : 0)
@@ -629,12 +600,10 @@ struct StatisticsView: View {
                         .scaleEffect(wrapPanelsRevealed >= 2 ? 1 : 0.9)
                 }
 
-                // Middle: Container (green, full width)
                 wrapContainerPanel(width: w - pad * 2, height: h * 0.26, screenWidth: w)
                     .opacity(wrapPanelsRevealed >= 3 ? 1 : 0)
                     .scaleEffect(wrapPanelsRevealed >= 3 ? 1 : 0.9)
 
-                // Bottom row: Year | Lifetime
                 HStack(spacing: pad) {
                     wrapYearPanel(width: panelW, height: h * 0.28, screenWidth: w)
                         .opacity(wrapPanelsRevealed >= 4 ? 1 : 0)
@@ -846,7 +815,6 @@ struct StatisticsView: View {
 
                 Spacer(minLength: 0)
 
-                // Mini silhouettes — 2 rows of 6
                 VStack(spacing: 4) {
                     ForEach(0..<2, id: \.self) { row in
                         HStack(spacing: width * 0.012) {
@@ -944,7 +912,6 @@ struct StatisticsView: View {
                 VStack(spacing: h * 0.03) {
                     Spacer().frame(height: h * 0.06)
 
-                    // Yellow header text
                     Text("DeFeedted today. But tomorrow? That's up to you. Three things stand between you and the feed.")
                         .font(.custom("ComicNeue-Bold", size: captionFont(width: w)))
                         .foregroundColor(.black)
@@ -963,7 +930,6 @@ struct StatisticsView: View {
 
                     Spacer().frame(height: h * 0.02)
 
-                    // Card 1
                     endingCard(
                         number: "1",
                         title: "Be intentional before you open your phone.",
@@ -971,7 +937,6 @@ struct StatisticsView: View {
                         w: w, cardPad: cardPad
                     )
 
-                    // Card 2
                     endingCard(
                         number: "2",
                         title: "Create more than you consume.",
@@ -979,7 +944,6 @@ struct StatisticsView: View {
                         w: w, cardPad: cardPad
                     )
 
-                    // Card 3
                     endingCard(
                         number: "3",
                         title: "Let boredom happen.",
@@ -987,7 +951,6 @@ struct StatisticsView: View {
                         w: w, cardPad: cardPad
                     )
 
-                    // New Issue button
                     Button(action: {
                         restartApp()
                     }) {
@@ -1040,7 +1003,6 @@ struct StatisticsView: View {
     // MARK: - Comic Caption Boxes
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    /// Yellow caption box — top-of-panel time label.
     @ViewBuilder
     private func comicCaption(_ text: String, w: CGFloat) -> some View {
         Text(text)
@@ -1058,7 +1020,6 @@ struct StatisticsView: View {
             )
     }
 
-    /// White caption box — bottom-of-panel "what you could do instead" text.
     @ViewBuilder
     private func comicCaptionAlt(_ text: String, w: CGFloat) -> some View {
         Text(text)
@@ -1137,7 +1098,6 @@ struct StatisticsView: View {
 }
 
 // MARK: - Ink Wipe Shape
-/// Simple solid ink sweep rectangle.
 struct InkWipeShape: Shape {
     func path(in rect: CGRect) -> Path {
         Path(rect)

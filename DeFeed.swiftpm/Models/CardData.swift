@@ -1,15 +1,13 @@
 import SwiftUI
 
-/// Data model for a single feed card (Cards 1–4).
 struct CardData: Identifiable {
     let id: Int
-    let contentImage: String       // Asset name inside Assets/
-    let dialogue: String           // Dr. Doomscroll's speech bubble text
-    let username: String           // Social media handle
-    let caption: String            // Post caption text
-    let hpGain: Double             // How much villain HP this card adds
+    let contentImage: String
+    let dialogue: String
+    let username: String
+    let caption: String
+    let hpGain: Double
 
-    /// All 4 regular feed cards.
     static let all: [CardData] = [
         CardData(
             id: 1,

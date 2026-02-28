@@ -3,7 +3,6 @@ import SwiftUI
 struct OnboardingView: View {
     @EnvironmentObject private var appState: AppState
 
-    /// The 4 dialogue lines Dr. Doomscroll delivers.
     private let dialogueLines: [String] = [
         "Welcome. Or should I say, welcome back! They call me Dr. Doomscroll I live in every feed, every notification, every just one more video.",
         "You didn't come here by accident. You never do.",
@@ -11,7 +10,6 @@ struct OnboardingView: View {
         "Scroll. I'll handle the rest."
     ]
 
-    /// The title text shown after each dialogue line finishes typing.
     private var titleText: String {
         "TAP TO CONTINUE"
     }
@@ -20,7 +18,7 @@ struct OnboardingView: View {
     @State private var isTyping: Bool = true
     @State private var titleVisible: Bool = false
     @State private var titlePulse: Bool = false
-    @State private var dialogueId: Int = 0 // Forces TypewriterText to re-create
+    @State private var dialogueId: Int = 0
 
     var body: some View {
         GeometryReader { geo in
@@ -105,18 +103,15 @@ struct OnboardingView: View {
     // MARK: - Actions
 
     private func handleTap() {
-        // If still typing, wait for completion.
         guard !isTyping else { return }
 
         if currentIndex < dialogueLines.count - 1 {
-            // Advance to next dialogue line
             titleVisible = false
             titlePulse = false
             isTyping = true
             currentIndex += 1
             dialogueId += 1
         } else {
-            // Last line done — transition to the feed
             withAnimation(.easeInOut(duration: 0.5)) {
                 appState.phase = .feed
             }
@@ -125,13 +120,11 @@ struct OnboardingView: View {
 
     // MARK: - Font Sizing
 
-    /// Scales dialogue font based on screen width (Figma: 24pt at 834w).
     private func dialogueFontSize(width: CGFloat) -> CGFloat {
         let scale = width / 834
         return max(16, 24 * scale)
     }
 
-    /// Scales title font based on screen width (Figma: 40pt at 834w).
     private func titleFontSize(width: CGFloat) -> CGFloat {
         let scale = width / 834
         return max(20, 32 * scale)

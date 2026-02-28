@@ -16,7 +16,6 @@ struct MyApp: App {
         }
     }
 
-    /// Registers bundled ComicNeue .ttf fonts so they can be used with `.custom(...)`.
     private static func registerCustomFonts() {
         let fontNames = ["ComicNeue-Regular", "ComicNeue-Bold"]
         for fontName in fontNames {

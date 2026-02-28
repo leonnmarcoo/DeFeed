@@ -1,24 +1,12 @@
 import SwiftUI
 
-/// Card 5 — The Mirror Card. Tap-through dialogue like onboarding.
-///
-/// 3 dialogue steps, each revealed on tap (bottom to top):
-/// 1. Small bubble (bottom-right): "Now that my health is full..."
-/// 2. Left bubble (middle): "Unrealistic standards..."
-/// 3. Right bubble (top): "Now meet the numbers behind your story."
-/// Final tap → transitions to Act 2.
 struct MirrorCardView: View {
     let villainHP: Double
     var onContinue: () -> Void
 
-    /// 0 = nothing shown yet (on appear → auto-advance to 1)
-    /// 1 = bottom bubble visible
-    /// 2 = bottom + left bubbles visible
-    /// 3 = all three bubbles visible
     @State private var dialogueStep: Int = 0
     @State private var showContinue: Bool = false
     @State private var titlePulse: Bool = false
-    @State private var mirrorDialogueId: Int = 0
 
     private let mirrorDialogues: [String] = [
         "Now that my health is full, you've met the real villain.",
@@ -117,11 +105,9 @@ struct MirrorCardView: View {
         }
         .ignoresSafeArea()
         .onAppear {
-            // Auto-show first bubble after a short delay
             withAnimation(.easeIn(duration: 0.6).delay(0.3)) {
                 dialogueStep = 1
             }
-            // Show "Tap to Continue" after first bubble
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 withAnimation(.easeIn(duration: 0.4)) {
                     showContinue = true
@@ -141,13 +127,10 @@ struct MirrorCardView: View {
         guard showContinue else { return }
 
         if dialogueStep < 3 {
-            // Reveal next bubble
-            mirrorDialogueId += 1
             withAnimation(.easeIn(duration: 0.5)) {
                 dialogueStep += 1
             }
         } else {
-            // All 3 dialogues shown — continue to Act 2
             onContinue()
         }
     }
