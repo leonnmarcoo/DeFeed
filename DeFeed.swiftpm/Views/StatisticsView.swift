@@ -33,6 +33,9 @@ struct StatisticsView: View {
     // MARK: - Panel 5 (Wrap-up) Animation
     @State private var wrapPanelsRevealed: Int = 0
 
+    // MARK: - Panel 6 (Ending) Animation
+    @State private var endingRevealed: Bool = false
+
     // MARK: - Computed Statistics
 
     private var dailyHours: Double { appState.dailyHours }
@@ -86,6 +89,7 @@ struct StatisticsView: View {
         case 2: yearPanelFull(w: w, h: h)
         case 3: lifetimePanelFull(w: w, h: h)
         case 4: wrapPanelFull(w: w, h: h)
+        case 5: endingPanelFull(w: w, h: h)
         default: EmptyView()
         }
     }
@@ -113,11 +117,19 @@ struct StatisticsView: View {
             .allowsHitTesting(false)
     }
 
+    // MARK: - Restart App
+
+    private func restartApp() {
+        appState.phase = .onboarding
+        appState.villainHP = 0
+        appState.dailyHours = 3
+    }
+
     // MARK: - Panel Transition
 
     private func handleAdvance(w: CGFloat) {
-        // Panel 5 (wrap): final screen — nothing to advance to
-        if currentPanel == 4 {
+        // Panel 5 (ending): final screen — nothing to advance to
+        if currentPanel == 5 {
             return
         }
         guard !isTransitioning && !isAnimating else { return }
@@ -125,7 +137,7 @@ struct StatisticsView: View {
     }
 
     private func advancePanel() {
-        guard currentPanel < 4 else { return }
+        guard currentPanel < 5 else { return }
         isTransitioning = true
 
         // Haptic
@@ -163,6 +175,7 @@ struct StatisticsView: View {
         case 2: animateYear()
         case 3: animateLifetime()
         case 4: animateWrap()
+        case 5: animateEnding()
         default: break
         }
     }
@@ -236,6 +249,19 @@ struct StatisticsView: View {
             }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            isAnimating = false
+        }
+    }
+
+    private func animateEnding() {
+        endingRevealed = false
+        isAnimating = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            withAnimation(.easeInOut(duration: 0.8)) {
+                endingRevealed = true
+            }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
             isAnimating = false
         }
     }
@@ -899,6 +925,115 @@ struct StatisticsView: View {
     private func wrapBigFont(width: CGFloat) -> CGFloat {
         let s = width / 834
         return max(36, 60 * s)
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // MARK: - Panel 6: Ending
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    @ViewBuilder
+    private func endingPanelFull(w: CGFloat, h: CGFloat) -> some View {
+        let cardPad: CGFloat = w * 0.06
+
+        ZStack {
+            Image("Stats Panel Green")
+                .resizable()
+                .ignoresSafeArea()
+
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: h * 0.03) {
+                    Spacer().frame(height: h * 0.06)
+
+                    // Yellow header text
+                    Text("DeFeedted today. But tomorrow? That's up to you. Three things stand between you and the feed.")
+                        .font(.custom("ComicNeue-Bold", size: captionFont(width: w)))
+                        .foregroundColor(.black)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 14)
+                        .frame(maxWidth: w * 0.85)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color.yellow)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(Color.black, lineWidth: 3)
+                                )
+                        )
+
+                    Spacer().frame(height: h * 0.02)
+
+                    // Card 1
+                    endingCard(
+                        number: "1",
+                        title: "Be intentional before you open your phone.",
+                        body: "Ask yourself why. Boredom, avoidance, or habit — before your thumb moves.",
+                        w: w, cardPad: cardPad
+                    )
+
+                    // Card 2
+                    endingCard(
+                        number: "2",
+                        title: "Create more than you consume.",
+                        body: "Write, build, cook, draw — anything that produces something instead of just absorbing it.",
+                        w: w, cardPad: cardPad
+                    )
+
+                    // Card 3
+                    endingCard(
+                        number: "3",
+                        title: "Let boredom happen.",
+                        body: "The urge to scroll peaks in 2 minutes and passes. Sit with it once. It gets easier.",
+                        w: w, cardPad: cardPad
+                    )
+
+                    // New Issue button
+                    Button(action: {
+                        restartApp()
+                    }) {
+                        Text("NEW ISSUE")
+                            .font(.custom("ComicNeue-Bold", size: captionFont(width: w)))
+                            .foregroundColor(.black)
+                            .padding(.horizontal, 32)
+                            .padding(.vertical, 12)
+                            .background(
+                                Capsule()
+                                    .fill(Color.yellow)
+                                    .overlay(
+                                        Capsule()
+                                            .stroke(Color.black, lineWidth: 3)
+                                    )
+                            )
+                    }
+
+                    Spacer().frame(height: h * 0.06)
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .opacity(endingRevealed ? 1 : 0)
+        }
+    }
+
+    @ViewBuilder
+    private func endingCard(number: String, title: String, body: String, w: CGFloat, cardPad: CGFloat) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("\(number). \(title)")
+                .font(.custom("ComicNeue-Bold", size: bodyFont(width: w) * 1.1))
+                .foregroundColor(.black)
+            Text(body)
+                .font(.custom("ComicNeue-Regular", size: bodyFont(width: w)))
+                .foregroundColor(.black)
+        }
+        .padding(18)
+        .frame(maxWidth: w * 0.85, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.white)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.black, lineWidth: 3)
+                )
+        )
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
