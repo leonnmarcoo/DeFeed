@@ -1,4 +1,4 @@
-import AVFoundation
+@preconcurrency import AVFoundation
 import SwiftUI
 
 /// Manages looping background music with crossfade transitions between tracks.
@@ -97,7 +97,8 @@ final class AudioManager: ObservableObject {
         newPlayer.play()
         incomingPlayer = newPlayer
 
-        let oldPlayer = activePlayer
+        nonisolated(unsafe) let fadingIn = newPlayer
+        nonisolated(unsafe) let fadingOut = activePlayer
         let steps = 30
         let interval = crossfadeDuration / Double(steps)
         var tick = 0
@@ -110,14 +111,14 @@ final class AudioManager: ObservableObject {
                 let progress = Float(tick) / Float(steps)
 
                 // Fade in new, fade out old
-                newPlayer.volume = progress * self.musicVolume
-                oldPlayer?.volume = (1.0 - progress) * self.musicVolume
+                fadingIn.volume = progress * self.musicVolume
+                fadingOut?.volume = (1.0 - progress) * self.musicVolume
 
                 if tick >= steps {
                     self.fadeTimer?.invalidate()
                     self.fadeTimer = nil
-                    oldPlayer?.stop()
-                    self.activePlayer = newPlayer
+                    fadingOut?.stop()
+                    self.activePlayer = fadingIn
                     self.incomingPlayer = nil
                     self.currentTrackName = trackName
                 }
