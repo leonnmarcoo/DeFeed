@@ -20,6 +20,8 @@ struct SpeechBubbleShape: Shape {
     var tailHeight: CGFloat = 14
     /// Fixed tail base width in points.
     var tailWidth: CGFloat = 20
+    /// Whether this is for stroke only (no overlap to avoid visible seam line)
+    var isStroke: Bool = false
 
     func path(in rect: CGRect) -> Path {
         let tailH = min(tailHeight, rect.height * 0.25)
@@ -29,8 +31,8 @@ struct SpeechBubbleShape: Shape {
                               width: rect.width, height: rect.height - tailH)
         var path = Path(roundedRect: bodyRect, cornerRadius: cornerRadius)
 
-        // Tail triangle — fixed size, positioned based on direction
-        let tailBaseY = bodyRect.maxY - 1 // slight overlap to avoid seam
+        // Tail triangle — slight overlap for fill to avoid seam, none for stroke
+        let tailBaseY = isStroke ? bodyRect.maxY : bodyRect.maxY - 1
         let tailTipY = rect.maxY
 
         let tailBaseX: CGFloat
@@ -76,14 +78,16 @@ struct SpeechBubbleView<Content: View>: View {
             .background(
                 SpeechBubbleShape(
                     cornerRadius: cornerRadius,
-                    tailDirection: tailDirection
+                    tailDirection: tailDirection,
+                    isStroke: false
                 )
                 .fill(Color.white)
             )
             .overlay(
                 SpeechBubbleShape(
                     cornerRadius: cornerRadius,
-                    tailDirection: tailDirection
+                    tailDirection: tailDirection,
+                    isStroke: true
                 )
                 .stroke(Color.black, lineWidth: borderWidth)
             )

@@ -14,6 +14,7 @@ struct StatisticsView: View {
     // MARK: - Navigation State
     @State private var currentPanel: Int = 0
     @State private var isTransitioning: Bool = false
+    @State private var isAnimating: Bool = false
     @State private var wipeProgress: CGFloat = 0    // 0 = off-screen left, 0.5 = covering, 1 = off-screen right
 
     // MARK: - Panel 1 (Week) Animation
@@ -119,7 +120,7 @@ struct StatisticsView: View {
         if currentPanel == 4 {
             return
         }
-        guard !isTransitioning else { return }
+        guard !isTransitioning && !isAnimating else { return }
         advancePanel()
     }
 
@@ -169,16 +170,21 @@ struct StatisticsView: View {
     private func animateWeek() {
         weekFillProgress = 0
         weekRedPulse = false
+        isAnimating = true
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             withAnimation(.easeInOut(duration: 1.5)) {
                 weekFillProgress = 1.0
             }
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            isAnimating = false
+        }
     }
 
     private func animateMonth() {
         monthTilesRevealed = 0
+        isAnimating = true
         for i in 1...30 {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3 + Double(i) * 0.055) {
                 withAnimation(.easeIn(duration: 0.1)) {
@@ -186,29 +192,41 @@ struct StatisticsView: View {
                 }
             }
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.1) {
+            isAnimating = false
+        }
     }
 
     private func animateYear() {
         yearArcTrim = 0
+        isAnimating = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             withAnimation(.easeInOut(duration: 2.0)) {
                 yearArcTrim = min(CGFloat(yearlyWeeks / 52.0), 1.0)
             }
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            isAnimating = false
+        }
     }
 
     private func animateLifetime() {
         lifetimeReveal = 0
+        isAnimating = true
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             withAnimation(.easeInOut(duration: 1.5)) {
                 lifetimeReveal = 1.0
             }
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            isAnimating = false
+        }
     }
 
     private func animateWrap() {
         wrapPanelsRevealed = 0
+        isAnimating = true
         let delayPerPanel: Double = 0.5
         for i in 1...5 {
             DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * delayPerPanel) {
@@ -216,6 +234,9 @@ struct StatisticsView: View {
                     wrapPanelsRevealed = i
                 }
             }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            isAnimating = false
         }
     }
 
@@ -928,31 +949,31 @@ struct StatisticsView: View {
 
     private func weekAlternative() -> String {
         switch weeklyHours {
-        case 1...14:  return "A skill practiced. A chapter read."
-        case 15...28: return "A short film made. A recipe mastered."
-        case 29...42: return "A new language started. A portfolio piece finished."
-        default:      return "A part-time job. A side project launched."
+        case 1...14:  return "That's a full episode of a show you actually chose to watch. Or a proper meal cooked from scratch."
+        case 15...28: return "That's a gym session, a shower, and still time left to call someone you've been meaning to call."
+        case 29...42: return "That's a full school project done before the deadline. Without the panic."
+        default:      return "That's an entire part-time shift. You worked for free, for the algorithm."
         }
     }
 
     private func monthAlternative() -> String {
-        if monthlyDays < 1 { return "A weekend trip planned and taken." }
-        if monthlyDays < 3 { return "A short course completed. A friendship deepened." }
-        if monthlyDays < 5 { return "A passion project with real progress." }
-        return "A vacation. An actual vacation."
+        if monthlyDays < 1 { return "A proper sleep-in Saturday. Breakfast included." }
+        if monthlyDays < 3 { return "Every overdue errand. Done. Plus a night out you didn't have to cancel." }
+        if monthlyDays < 5 { return "A short trip somewhere you keep saying you'll go. You could have gone." }
+        return "A full work week. Handed to a screen. For free."
     }
 
     private func yearAlternative() -> String {
-        if yearlyWeeks < 1 { return "A solo trip across your country." }
-        if yearlyWeeks < 3 { return "A novel written. A certification earned." }
-        if yearlyWeeks < 5 { return "A transformative travel experience." }
-        return "A sabbatical. A reinvention."
+        if yearlyWeeks < 1 { return "Every birthday you forgot to plan for. Planned. Every friend you've been meaning to catch up with. Caught up with." }
+        if yearlyWeeks < 3 { return "A holiday. A real one. Flights, hotel, memories, not screenshots." }
+        if yearlyWeeks < 5 { return "The side project you've been drafting in your notes app for two years. Actually started. Possibly finished." }
+        return "Enough time to get genuinely good at something. Not watched-a-tutorial good. Actually good."
     }
 
     private func lifetimeAlternative() -> String {
-        if lifetimeYears < 1 { return "Time to master something that changes your life." }
-        if lifetimeYears < 3 { return "Time to build something the world remembers." }
-        return "Time to become someone entirely different."
+        if lifetimeYears < 1 { return "Time to finish every book you've bought and never opened." }
+        if lifetimeYears < 3 { return "Time to raise a child through their first two years of life. Or build a business from zero to running." }
+        return "Long enough to learn a language, move to a new city, fall in love, and still have time left over."
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

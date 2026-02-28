@@ -42,6 +42,13 @@ struct MirrorCardView: View {
                     .frame(width: w * 0.88, height: 44)
                     .position(x: w * 0.50, y: h * 0.06)
 
+                // MARK: - Dr. Doomscroll Pose 3 (large, triumphant — behind dialogue)
+                Image("Dr Doomscroll Pose 3")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: w * 0.80, height: h * 0.51)
+                    .position(x: w * 0.50, y: h * 0.75)
+
                 // MARK: - Speech Bubble Right-Top (Step 3)
                 if dialogueStep >= 3 {
                     SpeechBubbleView(tailDirection: .bottomLeft, cornerRadius: 12, borderWidth: 2) {
@@ -83,13 +90,6 @@ struct MirrorCardView: View {
                     .position(x: w * 0.64, y: h * 0.50)
                     .transition(.opacity)
                 }
-
-                // MARK: - Dr. Doomscroll Pose 3 (large, triumphant)
-                Image("Dr Doomscroll Pose 3")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: w * 0.80, height: h * 0.51)
-                    .position(x: w * 0.50, y: h * 0.75)
 
                 // MARK: - "Tap to Continue" (shown after each bubble appears)
                 if showContinue {
