@@ -40,10 +40,19 @@ struct InputView: View {
                         .frame(height: h * 0.07)
 
                     // MARK: - Title
-                    Text(submitted ? "Your Screen Time" : "Screen Time Slider")
+                    Text(submitted ? "YOUR SCREEN TIME" : "SCREEN TIME SLIDER")
                         .font(.custom("ComicNeue-Bold", size: titleFontSize(width: w)))
-                        .foregroundColor(.white)
-                        .shadow(color: .black.opacity(0.5), radius: 4, x: 2, y: 2)
+                        .foregroundColor(.black)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 8)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(Color.yellow)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .stroke(Color.black, lineWidth: 3)
+                                )
+                        )
 
                     Spacer()
                         .frame(height: h * 0.04)
@@ -100,7 +109,10 @@ struct InputView: View {
                             .background(
                                 Capsule()
                                     .fill(.white)
-                                    .shadow(color: .black.opacity(0.3), radius: 3, x: 1, y: 2)
+                            )
+                            .overlay(
+                                Capsule()
+                                    .stroke(Color.black, lineWidth: 3)
                             )
                     }
 
@@ -109,12 +121,7 @@ struct InputView: View {
                     // MARK: - Bottom section: Pose 2 + Dialogue Box
                     ZStack(alignment: .bottomLeading) {
                         // Dialogue Box (right side)
-                        ZStack {
-                            Image("Speech Bubble Small")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: w * 0.60, height: w * 0.60)
-
+                        SpeechBubbleView(tailDirection: .bottomLeft) {
                             TypewriterText(
                                 dialogueText,
                                 font: .custom("ComicNeue-Regular", size: dialogueFontSize(width: w)),
@@ -124,10 +131,9 @@ struct InputView: View {
                             .id(dialogueId)
                             .multilineTextAlignment(.center)
                             .frame(width: w * 0.40, alignment: .center)
-                            .offset(y: -w * 0.04)
                         }
-                        .frame(width: w * 0.60, height: w * 0.60)
-                        .offset(x: w * 0.38, y: -h * 0.08)
+                        .frame(width: w * 0.55)
+                        .offset(x: w * 0.38, y: -h * 0.22)
 
                         // Dr. Doomscroll Pose 2 (bottom-left)
                         Image("Dr Doomscroll Pose 2")
@@ -163,7 +169,7 @@ struct InputView: View {
 
     private func titleFontSize(width: CGFloat) -> CGFloat {
         let s = width / 834
-        return max(28, 42 * s)
+        return max(20, 32 * s)
     }
 
     private func numberFontSize(width: CGFloat) -> CGFloat {

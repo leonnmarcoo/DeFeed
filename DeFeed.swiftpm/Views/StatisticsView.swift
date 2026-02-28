@@ -25,9 +25,6 @@ struct StatisticsView: View {
 
     // MARK: - Panel 4 (Lifetime) Animation
     @State private var lifetimeReveal: CGFloat = 0
-    @State private var showVillain: Bool = false
-    @State private var showTakeItBack: Bool = false
-    @State private var takeItBackPulse: Bool = false
 
     // MARK: - Panel 5 (Wrap-up) Animation
     @State private var wrapPanelsRevealed: Int = 0
@@ -206,28 +203,10 @@ struct StatisticsView: View {
 
     private func animateLifetime() {
         lifetimeReveal = 0
-        showVillain = false
-        showTakeItBack = false
-        takeItBackPulse = false
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             withAnimation(.easeInOut(duration: 1.5)) {
                 lifetimeReveal = 1.0
-            }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
-            withAnimation(.easeIn(duration: 0.6)) {
-                showVillain = true
-            }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.2) {
-            withAnimation(.easeIn(duration: 0.5)) {
-                showTakeItBack = true
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
-                    takeItBackPulse = true
-                }
             }
         }
     }
@@ -260,12 +239,12 @@ struct StatisticsView: View {
 
                 comicCaption("EVERY WEEK", w: w)
 
-                Spacer().frame(height: h * 0.06)
+                Spacer()
 
                 // Time bar visualization
                 weekTimeBar(w: w, h: h)
 
-                Spacer().frame(height: h * 0.06)
+                Spacer().frame(height: h * 0.03)
 
                 // Big number
                 Text("\(weeklyHours)")
@@ -278,11 +257,11 @@ struct StatisticsView: View {
                     .foregroundColor(.white)
                     .shadow(color: .black.opacity(0.4), radius: 3, x: 1, y: 1)
 
-                Spacer().frame(height: h * 0.06)
+                Spacer()
 
                 comicCaptionAlt(weekAlternative(), w: w)
 
-                Spacer()
+                Spacer().frame(height: h * 0.08)
             }
             .frame(maxWidth: .infinity)
         }
@@ -301,7 +280,7 @@ struct StatisticsView: View {
             ZStack(alignment: .leading) {
                 // Background track
                 RoundedRectangle(cornerRadius: barHeight / 2)
-                    .fill(Color.white.opacity(0.15))
+                    .fill(Color.white.opacity(0.3))
                     .frame(width: barWidth, height: barHeight)
 
                 // Filled segments
@@ -313,14 +292,13 @@ struct StatisticsView: View {
                             bottomTrailingRadius: 0,
                             topTrailingRadius: 0
                         )
-                        .fill(Color.white.opacity(0.4))
+                        .fill(Color.white.opacity(0.7))
                         .frame(width: neutralWidth, height: barHeight)
                     }
                     if redWidth > 0 {
                         Rectangle()
                             .fill(Color.red)
                             .frame(width: redWidth, height: barHeight)
-                            .opacity(weekRedPulse ? 0.6 : 1.0)
                     }
                 }
                 .clipShape(RoundedRectangle(cornerRadius: barHeight / 2))
@@ -328,14 +306,14 @@ struct StatisticsView: View {
             }
             .overlay(
                 RoundedRectangle(cornerRadius: barHeight / 2)
-                    .stroke(Color.white.opacity(0.25), lineWidth: 2)
+                    .stroke(Color.white, lineWidth: 2)
             )
 
             // Labels beneath the bar
             HStack {
                 Text("Sleep + Work")
                     .font(.custom("ComicNeue-Regular", size: smallFont(width: w)))
-                    .foregroundColor(.white.opacity(0.6))
+                    .foregroundColor(.white)
                 Spacer()
                 Text("\(weeklyHours)h scrolling")
                     .font(.custom("ComicNeue-Bold", size: smallFont(width: w)))
@@ -358,15 +336,15 @@ struct StatisticsView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
-                Spacer().frame(height: h * 0.06)
+                Spacer().frame(height: h * 0.08)
 
                 comicCaption("EACH MONTH", w: w)
 
-                Spacer().frame(height: h * 0.03)
+                Spacer()
 
                 monthCalendarGrid(w: w, h: h)
 
-                Spacer().frame(height: h * 0.04)
+                Spacer().frame(height: h * 0.03)
 
                 Text(String(format: "%.1f", monthlyDays))
                     .font(.custom("ComicNeue-Bold", size: bigNumberFont(width: w)))
@@ -378,11 +356,11 @@ struct StatisticsView: View {
                     .foregroundColor(.white)
                     .shadow(color: .black.opacity(0.4), radius: 3, x: 1, y: 1)
 
-                Spacer().frame(height: h * 0.05)
+                Spacer()
 
                 comicCaptionAlt(monthAlternative(), w: w)
 
-                Spacer()
+                Spacer().frame(height: h * 0.08)
             }
             .frame(maxWidth: .infinity)
         }
@@ -406,7 +384,7 @@ struct StatisticsView: View {
                 ZStack {
                     // Base tile
                     RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.white.opacity(0.12))
+                        .fill(Color.white.opacity(0.25))
                         .frame(width: tileSize, height: tileSize)
 
                     if isRevealed {
@@ -428,7 +406,7 @@ struct StatisticsView: View {
                         } else {
                             // Normal day
                             RoundedRectangle(cornerRadius: 4)
-                                .fill(Color.white.opacity(0.3))
+                                .fill(Color.white.opacity(0.5))
                                 .frame(width: tileSize, height: tileSize)
                         }
                     }
@@ -436,11 +414,11 @@ struct StatisticsView: View {
                     // Day number
                     Text("\(day + 1)")
                         .font(.custom("ComicNeue-Bold", size: smallFont(width: w)))
-                        .foregroundColor(.white.opacity(isRevealed ? 0.9 : 0.25))
+                        .foregroundColor(.white)
                 }
                 .overlay(
                     RoundedRectangle(cornerRadius: 4)
-                        .stroke(Color.white.opacity(0.15), lineWidth: 1)
+                        .stroke(Color.white.opacity(0.3), lineWidth: 1)
                 )
             }
         }
@@ -463,11 +441,11 @@ struct StatisticsView: View {
 
                 comicCaption("EVERY YEAR", w: w)
 
-                Spacer().frame(height: h * 0.05)
+                Spacer()
 
                 yearRadialArc(w: w, h: h)
 
-                Spacer().frame(height: h * 0.05)
+                Spacer().frame(height: h * 0.03)
 
                 Text(String(format: "%.1f", yearlyWeeks))
                     .font(.custom("ComicNeue-Bold", size: bigNumberFont(width: w)))
@@ -479,11 +457,11 @@ struct StatisticsView: View {
                     .foregroundColor(.white)
                     .shadow(color: .black.opacity(0.4), radius: 3, x: 1, y: 1)
 
-                Spacer().frame(height: h * 0.05)
+                Spacer()
 
                 comicCaptionAlt(yearAlternative(), w: w)
 
-                Spacer()
+                Spacer().frame(height: h * 0.08)
             }
             .frame(maxWidth: .infinity)
         }
@@ -497,7 +475,7 @@ struct StatisticsView: View {
         ZStack {
             // Background ring — full year
             Circle()
-                .stroke(Color.white.opacity(0.15), lineWidth: lineWidth)
+                .stroke(Color.white.opacity(0.3), lineWidth: lineWidth)
                 .frame(width: arcSize, height: arcSize)
 
             // Red arc — scrolling weeks
@@ -517,13 +495,13 @@ struct StatisticsView: View {
                     .foregroundColor(.white)
                 Text("weeks")
                     .font(.custom("ComicNeue-Regular", size: smallFont(width: w)))
-                    .foregroundColor(.white.opacity(0.7))
+                    .foregroundColor(.white)
             }
         }
         .padding(lineWidth / 2 + 14)
         .overlay(
             RoundedRectangle(cornerRadius: 14)
-                .stroke(Color.white.opacity(0.3), lineWidth: 2)
+                .stroke(Color.white, lineWidth: 2)
         )
     }
 
@@ -538,79 +516,46 @@ struct StatisticsView: View {
                 .resizable()
                 .ignoresSafeArea()
 
-            Color.black.opacity(0.3)
-                .ignoresSafeArea()
+            VStack(spacing: 0) {
+                Spacer().frame(height: h * 0.08)
 
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 0) {
-                    Spacer().frame(height: h * 0.06)
+                comicCaption("A LIFETIME", w: w)
 
-                    comicCaption("A LIFETIME", w: w)
+                Spacer()
 
-                    Spacer().frame(height: h * 0.03)
+                lifetimeSilhouettes(w: w, h: h)
 
-                    lifetimeSilhouettes(w: w, h: h)
+                Spacer().frame(height: h * 0.03)
 
-                    Spacer().frame(height: h * 0.025)
+                Text(String(format: "%.1f", lifetimeYears))
+                    .font(.custom("ComicNeue-Bold", size: bigNumberFont(width: w)))
+                    .foregroundColor(.white)
+                    .shadow(color: .black.opacity(0.6), radius: 6, x: 2, y: 3)
 
-                    Text(String(format: "%.1f", lifetimeYears))
-                        .font(.custom("ComicNeue-Bold", size: bigNumberFont(width: w)))
-                        .foregroundColor(.white)
-                        .shadow(color: .black.opacity(0.6), radius: 6, x: 2, y: 3)
+                Text("years of your life.\nHanded to the feed.")
+                    .font(.custom("ComicNeue-Regular", size: bodyFont(width: w)))
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                    .shadow(color: .black.opacity(0.4), radius: 3, x: 1, y: 1)
 
-                    Text("years of your life.\nHanded to the feed.")
-                        .font(.custom("ComicNeue-Regular", size: bodyFont(width: w)))
-                        .foregroundColor(.white)
-                        .multilineTextAlignment(.center)
-                        .shadow(color: .black.opacity(0.4), radius: 3, x: 1, y: 1)
+                Spacer()
 
-                    Spacer().frame(height: h * 0.02)
+                comicCaptionAlt(lifetimeAlternative(), w: w)
 
-                    comicCaptionAlt(lifetimeAlternative(), w: w)
-
-                    Spacer().frame(height: h * 0.025)
-
-                    // Dr. Doomscroll at full power
-                    if showVillain {
-                        Image("Dr Doomscroll Pose 3")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(height: h * 0.18)
-                            .shadow(color: .black.opacity(0.6), radius: 10, x: 0, y: 4)
-                            .transition(.scale.combined(with: .opacity))
-
-                        Text("\"This is what I've taken from you.\"")
-                            .font(.custom("ComicNeue-Bold", size: smallFont(width: w) * 1.1))
-                            .foregroundColor(.white)
-                            .shadow(color: .black.opacity(0.6), radius: 4, x: 2, y: 2)
-                            .padding(.top, 6)
-                    }
-
-                    // Pulsing "Take it back." prompt
-                    if showTakeItBack {
-                        Text("Take it back.")
-                            .font(.custom("ComicNeue-Bold", size: captionFont(width: w) * 1.2))
-                            .foregroundColor(.yellow)
-                            .shadow(color: .black.opacity(0.8), radius: 6, x: 2, y: 3)
-                            .opacity(takeItBackPulse ? 0.5 : 1.0)
-                            .padding(.top, h * 0.02)
-                            .transition(.opacity)
-                    }
-
-                    Spacer().frame(height: h * 0.06)
-                }
+                Spacer().frame(height: h * 0.08)
             }
+            .frame(maxWidth: .infinity)
         }
     }
 
     @ViewBuilder
     private func lifetimeSilhouettes(w: CGFloat, h: CGFloat) -> some View {
-        let totalFigures = 6 // age 13–72, one per ~decade
+        let totalFigures = 12
         let yearsPerFigure = 59.0 / Double(totalFigures)
         let lostFigures = lifetimeYears / yearsPerFigure
-        let figureSize = w * 0.09
+        let figureSize = w * 0.06
 
-        HStack(spacing: w * 0.025) {
+        HStack(spacing: w * 0.015) {
             ForEach(0..<totalFigures, id: \.self) { index in
                 let reverseIndex = totalFigures - 1 - index
                 let isFullLost = Double(reverseIndex) < floor(lostFigures)
@@ -622,7 +567,6 @@ struct StatisticsView: View {
                     Image(systemName: "figure.stand")
                         .font(.system(size: figureSize))
                         .foregroundColor(isAffected ? .red : .white)
-                        .opacity(isAffected ? max(0.45, 1.0 - Double(crackAmount) * 0.35) : 1.0)
                         .rotationEffect(isAffected && lifetimeReveal > 0.5
                             ? .degrees(Double(reverseIndex % 2 == 0 ? -5 : 5))
                             : .zero)
@@ -630,7 +574,7 @@ struct StatisticsView: View {
 
                     Text(decadeLabel(index))
                         .font(.custom("ComicNeue-Regular", size: smallFont(width: w) * 0.85))
-                        .foregroundColor(.white.opacity(0.5))
+                        .foregroundColor(.white)
                 }
             }
         }
@@ -638,7 +582,7 @@ struct StatisticsView: View {
         .padding(.vertical, 14)
         .overlay(
             RoundedRectangle(cornerRadius: 10)
-                .stroke(Color.white.opacity(0.25), lineWidth: 2)
+                .stroke(Color.white, lineWidth: 2)
         )
     }
 
@@ -657,7 +601,7 @@ struct StatisticsView: View {
         let panelW = (w - pad * 3) / 2
 
         ZStack {
-            Color.black.ignoresSafeArea()
+            Color.white.ignoresSafeArea()
 
             VStack(spacing: pad) {
                 Spacer(minLength: 0)

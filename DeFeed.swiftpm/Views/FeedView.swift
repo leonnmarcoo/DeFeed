@@ -104,12 +104,7 @@ struct FeedView: View {
                 .position(x: w * 0.155, y: headerHeight * 0.55)
 
             // Speech bubble with dialogue (center)
-            ZStack {
-                Image("Speech Bubble Small")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: w * 0.30, height: w * 0.30)
-
+            SpeechBubbleView(tailDirection: .bottomLeft, cornerRadius: 12, borderWidth: 2) {
                 TypewriterText(
                     cards[currentPage].dialogue,
                     font: .custom("ComicNeue-Regular", size: dialogueFontSize(width: w)),
@@ -117,11 +112,11 @@ struct FeedView: View {
                     characterDelay: .milliseconds(30)
                 )
                 .multilineTextAlignment(.center)
-                .frame(width: w * 0.20, alignment: .center)
-                .offset(y: -w * 0.02)
+                .frame(width: w * 0.28, alignment: .center)
                 .id(dialogueId)
             }
-            .position(x: w * 0.43, y: headerHeight * 0.45)
+            .frame(width: w * 0.40)
+            .position(x: w * 0.43, y: headerHeight * 0.52)
 
             // HP bar (right side)
             HPBarView(hp: appState.villainHP)

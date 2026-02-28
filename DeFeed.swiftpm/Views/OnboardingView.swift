@@ -13,7 +13,7 @@ struct OnboardingView: View {
 
     /// The title text shown after each dialogue line finishes typing.
     private var titleText: String {
-        "Tap to Continue"
+        "TAP TO CONTINUE"
     }
 
     @State private var currentIndex: Int = 0
@@ -49,43 +49,46 @@ struct OnboardingView: View {
                     .frame(width: w * 0.875, height: h * 0.333)
                     .position(x: w * 0.50, y: h * 0.83)
 
-                // MARK: - Speech Bubble
-                Image("Speech Bubble Small")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: w * 0.60, height: w * 0.60)
-                    .position(x: w * 0.64, y: h * 0.55)
-
-                // MARK: - Dialogue Text (inside the speech bubble)
-                TypewriterText(
-                    dialogueLines[currentIndex],
-                    font: .custom("ComicNeue-Regular", size: dialogueFontSize(width: w)),
-                    color: .black,
-                    characterDelay: .milliseconds(35)
-                ) {
-                    // Typing complete — show the title
-                    withAnimation(.easeIn(duration: 0.4)) {
-                        isTyping = false
-                        titleVisible = true
-                    }
-                    // Start gentle pulse after appearing
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
-                            titlePulse = true
+                // MARK: - Speech Bubble + Dialogue
+                SpeechBubbleView(tailDirection: .bottomLeft) {
+                    TypewriterText(
+                        dialogueLines[currentIndex],
+                        font: .custom("ComicNeue-Regular", size: dialogueFontSize(width: w)),
+                        color: .black,
+                        characterDelay: .milliseconds(35)
+                    ) {
+                        withAnimation(.easeIn(duration: 0.4)) {
+                            isTyping = false
+                            titleVisible = true
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+                                titlePulse = true
+                            }
                         }
                     }
+                    .id(dialogueId)
+                    .multilineTextAlignment(.center)
+                    .frame(width: w * 0.40, alignment: .center)
                 }
-                .id(dialogueId)
-                .multilineTextAlignment(.center)
-                .frame(width: w * 0.40, alignment: .center)
-                .position(x: w * 0.64, y: h * 0.52)
+                .frame(width: w * 0.55)
+                .position(x: w * 0.62, y: h * 0.50)
 
                 // MARK: - Title Text (top center)
                 if titleVisible {
                     Text(titleText)
                         .font(.custom("ComicNeue-Bold", size: titleFontSize(width: w)))
-                        .foregroundColor(.white)
-                        .shadow(color: .black.opacity(0.6), radius: 4, x: 2, y: 2)
+                        .foregroundColor(.black)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 8)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(Color.yellow)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .stroke(Color.black, lineWidth: 3)
+                                )
+                        )
                         .opacity(titlePulse ? 0.6 : 1.0)
                         .position(x: w * 0.50, y: h * 0.09)
                         .transition(.opacity)
@@ -131,7 +134,7 @@ struct OnboardingView: View {
     /// Scales title font based on screen width (Figma: 40pt at 834w).
     private func titleFontSize(width: CGFloat) -> CGFloat {
         let scale = width / 834
-        return max(24, 40 * scale)
+        return max(20, 32 * scale)
     }
 
 }

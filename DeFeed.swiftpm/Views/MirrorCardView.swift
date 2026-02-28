@@ -44,57 +44,43 @@ struct MirrorCardView: View {
 
                 // MARK: - Speech Bubble Right-Top (Step 3)
                 if dialogueStep >= 3 {
-                    ZStack {
-                        Image("Mirror Bubble Right")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: w * 0.37, height: h * 0.23)
-
+                    SpeechBubbleView(tailDirection: .bottomLeft, cornerRadius: 12, borderWidth: 2) {
                         Text(mirrorDialogues[2])
                             .font(.custom("ComicNeue-Regular", size: bubbleFontSize(width: w)))
                             .foregroundColor(.black)
                             .multilineTextAlignment(.center)
-                            .frame(width: w * 0.22, alignment: .center)
+                            .frame(width: w * 0.24, alignment: .center)
                     }
-                    .position(x: w * 0.63, y: h * 0.27)
+                    .frame(width: w * 0.35)
+                    .position(x: w * 0.63, y: h * 0.24)
                     .transition(.opacity)
                 }
 
                 // MARK: - Speech Bubble Left: Crimes list (Step 2+)
                 if dialogueStep >= 2 {
-                    ZStack {
-                        Image("Mirror Bubble Left")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: w * 0.37, height: h * 0.23)
-
+                    SpeechBubbleView(tailDirection: .bottomRight, cornerRadius: 12, borderWidth: 2) {
                         Text(mirrorDialogues[1])
                             .font(.custom("ComicNeue-Regular", size: bubbleFontSize(width: w)))
                             .foregroundColor(.black)
                             .multilineTextAlignment(.center)
-                            .frame(width: w * 0.24, alignment: .center)
-                            .offset(y: -h * 0.015)
+                            .frame(width: w * 0.26, alignment: .center)
                     }
-                    .position(x: w * 0.30, y: h * 0.42)
+                    .frame(width: w * 0.38)
+                    .position(x: w * 0.30, y: h * 0.38)
                     .transition(.opacity)
                 }
 
                 // MARK: - Dialogue Box Bottom-Right (Step 1+)
                 if dialogueStep >= 1 {
-                    ZStack {
-                        Image("Speech Bubble Small")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: w * 0.36, height: w * 0.36)
-
+                    SpeechBubbleView(tailDirection: .bottomLeft, cornerRadius: 12, borderWidth: 2) {
                         Text(mirrorDialogues[0])
                             .font(.custom("ComicNeue-Regular", size: bubbleFontSize(width: w)))
                             .foregroundColor(.black)
                             .multilineTextAlignment(.center)
-                            .frame(width: w * 0.22, alignment: .center)
-                            .offset(y: -w * 0.02)
+                            .frame(width: w * 0.24, alignment: .center)
                     }
-                    .position(x: w * 0.64, y: h * 0.53)
+                    .frame(width: w * 0.35)
+                    .position(x: w * 0.64, y: h * 0.50)
                     .transition(.opacity)
                 }
 
@@ -107,10 +93,19 @@ struct MirrorCardView: View {
 
                 // MARK: - "Tap to Continue" (shown after each bubble appears)
                 if showContinue {
-                    Text("Tap to Continue")
+                    Text("TAP TO CONTINUE")
                         .font(.custom("ComicNeue-Bold", size: titleFontSize(width: w)))
-                        .foregroundColor(.white)
-                        .shadow(color: .black.opacity(0.6), radius: 4, x: 2, y: 2)
+                        .foregroundColor(.black)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 8)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(Color.yellow)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .stroke(Color.black, lineWidth: 3)
+                                )
+                        )
                         .opacity(titlePulse ? 0.6 : 1.0)
                         .position(x: w * 0.50, y: h * 0.93)
                         .transition(.opacity)
@@ -166,6 +161,6 @@ struct MirrorCardView: View {
 
     private func titleFontSize(width: CGFloat) -> CGFloat {
         let s = width / 834
-        return max(24, 40 * s)
+        return max(20, 32 * s)
     }
 }
